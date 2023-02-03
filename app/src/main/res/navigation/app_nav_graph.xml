@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav_graph"
+    app:startDestination="@id/landingPage">
+
+    <fragment
+        android:id="@+id/landingPage"
+        android:name="com.pepsa.pepsadispatch.welcomeScreens.LandingPage"
+        android:label="fragment_landing_page"
+        tools:layout="@layout/fragment_landing_page" >
+        <action
+            android:id="@+id/action_landingPage_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.pepsa.pepsadispatch.welcomeScreens.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+</navigation>
