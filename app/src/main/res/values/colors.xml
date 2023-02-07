@@ -15,4 +15,5 @@
     <color name="overlay_grey_light">#000D0F13</color>
     <color name="overlay_grey">#FF08090A</color>
     <color name="landing_page_status_bar">#4f4144</color>
+    <color name="grey">#F2F3F7</color>
 </resources>

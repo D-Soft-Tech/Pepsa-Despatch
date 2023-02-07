@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/landingPage"
-        android:name="com.pepsa.pepsadispatch.welcomeScreens.LandingPage"
+        android:name="com.pepsa.pepsadispatch.welcomeScreens.presentation.ui.fragments.LandingPage"
         android:label="fragment_landing_page"
         tools:layout="@layout/fragment_landing_page" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.pepsa.pepsadispatch.welcomeScreens.LoginFragment"
+        android:name="com.pepsa.pepsadispatch.welcomeScreens.presentation.ui.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
 </navigation>

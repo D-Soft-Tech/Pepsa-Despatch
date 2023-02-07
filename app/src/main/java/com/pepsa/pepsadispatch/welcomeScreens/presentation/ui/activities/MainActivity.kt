@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch
+package com.pepsa.pepsadispatch.welcomeScreens.presentation.ui.activities
 
 import android.animation.ObjectAnimator
 import android.os.Build
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
+import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

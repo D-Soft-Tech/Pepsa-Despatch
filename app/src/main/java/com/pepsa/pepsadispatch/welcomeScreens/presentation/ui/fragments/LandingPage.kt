@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch.welcomeScreens
+package com.pepsa.pepsadispatch.welcomeScreens.presentation.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

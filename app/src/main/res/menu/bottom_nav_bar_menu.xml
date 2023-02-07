@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/utilites"
+        android:icon="@drawable/ic_utilities"
+        android:title="@string/utilities" />
+
+    <item
+        android:id="@+id/tasks"
+        android:icon="@drawable/ic_utilities"
+        android:title="@string/tasks" />
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/wallet"
+        android:icon="@drawable/ic_wallet"
+        android:title="@string/wallet" />
+
+    <item
+        android:id="@+id/profile_settings"
+        android:icon="@drawable/ic_user"
+        android:title="@string/profile" />
+</menu>
