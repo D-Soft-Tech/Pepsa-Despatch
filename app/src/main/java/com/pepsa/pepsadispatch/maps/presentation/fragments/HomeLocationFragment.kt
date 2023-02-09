@@ -1,10 +1,11 @@
-package com.pepsa.pepsadispatch.mian.presentation.ui.fragments
+package com.pepsa.pepsadispatch.maps.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -12,8 +13,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.pepsa.pepsadispatch.R
+import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeLocationFragment : Fragment(), OnMapReadyCallback {
+    private val viewModel: MapViewModel by viewModels()
     private lateinit var mMap: GoogleMap
 
     // GeeksforGeeks coordinates
@@ -42,8 +47,11 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
+        val origin = LatLng(originLatitude, originLongitude)
+        val destination = LatLng(destinationLatitude, destinationLongitude)
+        viewModel.getRoute(origin, destination)
         return inflater.inflate(R.layout.fragment_home_location, container, false)
     }
 
@@ -61,11 +69,10 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 18F))
     }
 
-    private fun getDirectionURL(origin: LatLng, dest: LatLng, secret: String): String {
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
-            "&destination=${dest.latitude},${dest.longitude}" +
-            "&sensor=false" +
-            "&mode=driving" +
-            "&key=$secret"
+    override fun onResume() {
+        super.onResume()
+        viewModel.routePolylineOptions.observe(viewLifecycleOwner) {
+            mMap.addPolyline(it)
+        }
     }
 }

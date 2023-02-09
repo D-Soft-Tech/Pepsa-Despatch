@@ -18,6 +18,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties props = new Properties();
+        props.load(rootProject.file("local.properties").newDataInputStream())
+        buildConfigField("String", "PLACE_API_KEY", "\"${props.getProperty("PLACE_API_KEY")}\"")
     }
 
     buildTypes {
@@ -82,7 +86,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$http_logging_interceptor_version"
     //easyprefs
-    implementation "com.pixplicity.easyprefs:library:$easy_prefs_version"
+    implementation "com.pixplicity.easyprefs:EasyPrefs:$easy_prefs_version"
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$dagger_hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt_version"

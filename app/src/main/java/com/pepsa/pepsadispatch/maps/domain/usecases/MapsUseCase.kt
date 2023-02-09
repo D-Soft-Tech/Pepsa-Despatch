@@ -1,16 +1,8 @@
-package com.pepsa.pepsadispatch.mian.domain
+package com.pepsa.pepsadispatch.maps.domain.usecases
 
 import com.google.android.gms.maps.model.LatLng
 
 class MapsUseCase {
-    fun getDirectionURL(origin: LatLng, dest: LatLng, secret: String): String {
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
-            "&destination=${dest.latitude},${dest.longitude}" +
-            "&sensor=false" +
-            "&mode=driving" +
-            "&key=$secret"
-    }
-
     fun decodePolyline(encoded: String): List<LatLng> {
         val poly = ArrayList<LatLng>()
         var index = 0

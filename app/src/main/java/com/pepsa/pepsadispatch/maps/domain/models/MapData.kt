@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch.mian.domain.models
+package com.pepsa.pepsadispatch.maps.domain.models
 
 class MapData {
     var routes = ArrayList<Routes>()

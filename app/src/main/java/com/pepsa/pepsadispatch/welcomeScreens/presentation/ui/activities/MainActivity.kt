@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                 val slideRight = ObjectAnimator.ofFloat(
                     splashScreenView,
                     View.TRANSLATION_X,
-                    -splashScreenView.width.toFloat()
+                    -splashScreenView.width.toFloat(),
                 )
                 slideRight.apply {
                     duration = 600L
