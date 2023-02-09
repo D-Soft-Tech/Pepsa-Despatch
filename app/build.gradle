@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -47,12 +49,41 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'androidx.core:core-splashscreen:1.0.0'
+    //Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    //android lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
+    // Splash Screen API
+    implementation "androidx.core:core-splashscreen:$splash_screen_api_version"
+    // Google Maps
+    implementation "com.google.android.gms:play-services-maps:$google_maps_version"
     // For Map fragment
-    implementation 'com.google.android.libraries.places:places:3.0.0'
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation "com.google.android.libraries.places:places:$google_places_api_version"
+    implementation "com.google.android.gms:play-services-maps:$google_maps_version"
+    //rx
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
+    // Gson
+    implementation "com.google.code.gson:gson:$gson_version"
+    //room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$http_logging_interceptor_version"
+    //easyprefs
+    implementation "com.pixplicity.easyprefs:library:$easy_prefs_version"
+    // Dagger Hilt
+    implementation "com.google.dagger:hilt-android:$dagger_hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt_version"
 }
