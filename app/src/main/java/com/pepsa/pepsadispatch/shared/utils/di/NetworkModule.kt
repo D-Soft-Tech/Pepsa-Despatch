@@ -3,6 +3,7 @@ package com.pepsa.pepsadispatch.shared.utils.di
 import com.pepsa.pepsadispatch.maps.data.api.GetRouteDirectionApi
 import com.pepsa.pepsadispatch.maps.data.api.apiImp.GetRouteDirectionApiImpl
 import com.pepsa.pepsadispatch.maps.domain.interactors.MapsApiRepository
+import com.pepsa.pepsadispatch.maps.utils.MapsConstants.MAP_GET_ROUTE_BASE_URL
 import com.pepsa.pepsadispatch.shared.utils.AppConstants.TIME_OUT_10
 import dagger.Module
 import dagger.Provides
@@ -22,7 +23,7 @@ import javax.inject.Singleton
 object NetworkModule {
     @Singleton
     @Provides
-    fun providesBaseUrl(): String = "https://maps.googleapis.com/"
+    fun providesBaseUrl(): String = MAP_GET_ROUTE_BASE_URL
 
     @Singleton
     @Provides

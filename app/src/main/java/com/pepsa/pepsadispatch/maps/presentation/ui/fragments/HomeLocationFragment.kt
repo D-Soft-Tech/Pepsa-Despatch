@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch.maps.presentation.fragments
+package com.pepsa.pepsadispatch.maps.presentation.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,13 +12,21 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
+import com.pepsa.pepsadispatch.maps.utils.MapsConstants.MAP_ZOOM_14F
+import com.pepsa.pepsadispatch.maps.utils.MapsConstants.MAP_ZOOM_18F
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeLocationFragment : Fragment(), OnMapReadyCallback {
     private val viewModel: MapViewModel by viewModels()
+    private lateinit var mapFragment: SupportMapFragment
+
+    @Inject
+    lateinit var gson: Gson
     private lateinit var mMap: GoogleMap
 
     // GeeksforGeeks coordinates
@@ -39,9 +47,6 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
     override fun onCreateView(
@@ -57,8 +62,8 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(callback)
     }
 
     override fun onMapReady(p0: GoogleMap) {
@@ -66,13 +71,21 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
         val originLocation = LatLng(originLatitude, originLongitude)
         mMap.clear()
         mMap.addMarker(MarkerOptions().position(originLocation))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 18F))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, MAP_ZOOM_18F))
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.routePolylineOptions.observe(viewLifecycleOwner) {
-            mMap.addPolyline(it)
+            mapFragment.getMapAsync { googleMap ->
+                mMap = googleMap
+                val originLocation = LatLng(originLatitude, originLongitude)
+                mMap.addMarker(MarkerOptions().position(originLocation))
+                val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
+                mMap.addMarker(MarkerOptions().position(destinationLocation))
+                mMap.addPolyline(it)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, MAP_ZOOM_14F))
+            }
         }
     }
 }

@@ -30,9 +30,11 @@ class MapViewModel @Inject constructor(
     val routePolylineOptions: LiveData<PolylineOptions> get() = _routePolylineOptions
 
     fun getRoute(origin: LatLng, destination: LatLng) {
+        val originString = "${origin.latitude},${origin.longitude}"
+        val destinationString = "${destination.latitude},${destination.longitude}"
         mapsApiRepository.getRoutePath(
-            "${origin.latitude},${origin.longitude}",
-            "${destination.latitude},${destination.longitude}",
+            originString,
+            destinationString,
         ).subscribeOn(ioScheduler)
             .observeOn(mainThreadScheduler)
             .subscribe { routeData, error ->
