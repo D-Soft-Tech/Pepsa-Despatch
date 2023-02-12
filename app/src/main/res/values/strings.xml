@@ -31,4 +31,6 @@
     <string name="route">Route</string>
     <string name="details">Details</string>
     <string name="cancel">Cancel</string>
+    <string name="app_logo">Pepsa Logo</string>
+    <string name="offline">Offline</string>
 </resources>

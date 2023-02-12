@@ -23,7 +23,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeLocationFragment : Fragment(), OnMapReadyCallback {
     private val viewModel: MapViewModel by viewModels()
-    private lateinit var mapFragment: SupportMapFragment
+    private var mapFragment: SupportMapFragment? = null
 
     @Inject
     lateinit var gson: Gson
@@ -57,13 +57,18 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
         val origin = LatLng(originLatitude, originLongitude)
         val destination = LatLng(destinationLatitude, destinationLongitude)
         viewModel.getRoute(origin, destination)
-        return inflater.inflate(R.layout.fragment_home_location, container, false)
+        return inflater.inflate(
+            com.pepsa.pepsadispatch.R.layout.fragment_home_location,
+            container,
+            false,
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(callback)
+        mapFragment =
+            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
     }
 
     override fun onMapReady(p0: GoogleMap) {
@@ -77,7 +82,7 @@ class HomeLocationFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         viewModel.routePolylineOptions.observe(viewLifecycleOwner) {
-            mapFragment.getMapAsync { googleMap ->
+            mapFragment?.getMapAsync { googleMap ->
                 mMap = googleMap
                 val originLocation = LatLng(originLatitude, originLongitude)
                 mMap.addMarker(MarkerOptions().position(originLocation))

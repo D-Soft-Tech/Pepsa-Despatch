@@ -10,10 +10,13 @@
     <color name="off_white">#80FFFFFF</color>
     <color name="off_white_darker">#4DFFFFFF</color>
     <color name="primaryColor">#9D0208</color>
+    <color name="colorPrimary">#9D0208</color>
     <color name="btnColor">#E2231A</color>
     <color name="splashScreenColor">#6f0104</color>
     <color name="overlay_grey_light">#000D0F13</color>
     <color name="overlay_grey">#FF08090A</color>
     <color name="landing_page_status_bar">#4f4144</color>
     <color name="grey">#F2F3F7</color>
+    <color name="online">#06D37D</color>
+    <color name="offline">#D9DBDBDB</color>
 </resources>

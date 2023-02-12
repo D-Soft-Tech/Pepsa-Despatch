@@ -19,6 +19,11 @@ object AppUtils {
         window.statusBarColor = ContextCompat.getColor(requireContext(), colorId)
     }
 
+    fun Activity.changeStatusBarColor(@ColorRes colorId: Int) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, colorId)
+    }
+
     fun Fragment.getMapsKey(): String {
         val ai: ApplicationInfo = requireActivity().applicationContext.packageManager
             .getApplicationInfo(
