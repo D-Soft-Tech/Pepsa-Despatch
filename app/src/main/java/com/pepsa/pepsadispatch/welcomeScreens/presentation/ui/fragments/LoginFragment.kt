@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.FragmentLoginBinding
-import com.pepsa.pepsadispatch.mian.presentation.ui.activities.MainApp
+import com.pepsa.pepsadispatch.mian.presentation.ui.activities.MainAppActivity
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         loginButton.setOnClickListener {
-            val intent = Intent(requireActivity(), MainApp::class.java)
+            val intent = Intent(requireActivity(), MainAppActivity::class.java)
             requireContext().startActivity(intent)
             requireActivity().finish()
         }

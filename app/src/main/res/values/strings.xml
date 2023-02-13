@@ -33,4 +33,8 @@
     <string name="cancel">Cancel</string>
     <string name="app_logo">Pepsa Logo</string>
     <string name="offline">Offline</string>
+    <string name="satellite">Satellite View</string>
+    <string name="terrain">Terrain View</string>
+    <string name="normal">Normal View</string>
+    <string name="traffic">Traffic</string>
 </resources>
