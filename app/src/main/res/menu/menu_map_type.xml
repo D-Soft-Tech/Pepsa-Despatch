@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/satellite_view"
-        android:icon="@drawable/ic_satellite"
-        android:title="@string/satellite" />
-
-    <item
-        android:id="@+id/terrain_view"
-        android:icon="@drawable/ic_terrain"
-        android:title="@string/terrain" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/normal_view"
         android:icon="@drawable/ic_normal_map"
-        android:title="@string/normal" />
+        android:title="@string/normal"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/satellite_view"
+        android:icon="@drawable/ic_satellite"
+        android:title="@string/satellite"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/terrain_view"
+        android:icon="@drawable/ic_terrain"
+        android:title="@string/terrain"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/traffic_view"
         android:icon="@drawable/traffic"
-        android:title="@string/traffic" />
+        android:title="@string/traffic"
+        app:showAsAction="never" />
 </menu>

@@ -37,4 +37,8 @@
     <string name="terrain">Terrain View</string>
     <string name="normal">Normal View</string>
     <string name="traffic">Traffic</string>
+    <string name="satellite_view_selected">Satellite view selected</string>
+    <string name="terrain_view_selected">Terrain view selected</string>
+    <string name="traffic_view_selected">Traffic view selected</string>
+    <string name="normal_view_selected">Normal view selected</string>
 </resources>

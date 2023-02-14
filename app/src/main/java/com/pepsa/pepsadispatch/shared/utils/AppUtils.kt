@@ -5,7 +5,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.pepsa.pepsadispatch.shared.utils.AppConstants.MAPS_KEY
@@ -44,5 +46,13 @@ object AppUtils {
 
     fun Disposable.disposeWith(compositeDisposable: CompositeDisposable) {
         compositeDisposable.add(this)
+    }
+
+    fun Activity.showToast(@StringRes stringMessageId: Int) {
+        Toast.makeText(this, getString(stringMessageId), Toast.LENGTH_SHORT).show()
+    }
+
+    fun Fragment.showToast(@StringRes stringMessageId: Int) {
+        Toast.makeText(requireContext(), getString(stringMessageId), Toast.LENGTH_SHORT).show()
     }
 }

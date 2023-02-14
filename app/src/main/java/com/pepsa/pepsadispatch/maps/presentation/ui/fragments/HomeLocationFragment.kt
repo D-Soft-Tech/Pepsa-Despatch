@@ -2,14 +2,18 @@ package com.pepsa.pepsadispatch.maps.presentation.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,11 +25,11 @@ import com.google.android.gms.maps.model.PointOfInterest
 import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.FragmentHomeLocationBinding
-import com.pepsa.pepsadispatch.maps.presentation.ui.uiUtils.AppSwipeGestureDetector
+import com.pepsa.pepsadispatch.maps.domain.usecases.MapsUseCase
 import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants.MAP_ZOOM_14F
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants.MAP_ZOOM_18F
-import com.pepsa.pepsadispatch.shared.domain.interactors.SwipeGestureCallBacks
+import com.pepsa.pepsadispatch.shared.utils.AppUtils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -34,13 +38,11 @@ class HomeLocationFragment :
     Fragment(),
     OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPoiClickListener,
-    SwipeGestureCallBacks {
+    GoogleMap.OnPoiClickListener {
     private lateinit var binding: FragmentHomeLocationBinding
     private val viewModel: MapViewModel by viewModels()
     private var mapFragment: SupportMapFragment? = null
-    private lateinit var detector: GestureDetector
-    private lateinit var appSwipeDetector: AppSwipeGestureDetector
+    private lateinit var mapsUseCase: MapsUseCase
 
     @Inject
     lateinit var gson: Gson
@@ -72,8 +74,6 @@ class HomeLocationFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        appSwipeDetector = AppSwipeGestureDetector(this)
-        detector = GestureDetector(requireContext(), appSwipeDetector)
         val origin = LatLng(originLatitude, originLongitude)
         val destination = LatLng(destinationLatitude, destinationLongitude)
         viewModel.getRoute(origin, destination)
@@ -83,7 +83,6 @@ class HomeLocationFragment :
             container,
             false,
         )
-        binding.root.setOnTouchListener { _, event -> detector.onTouchEvent(event) }
 
         return binding.root
     }
@@ -93,6 +92,42 @@ class HomeLocationFragment :
         mapFragment =
             childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_map_type, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    mapsUseCase = MapsUseCase(mMap)
+                    return when (menuItem.itemId) {
+                        R.id.normal_view -> {
+                            showToast(R.string.normal_view_selected)
+                            mapsUseCase.selectNormalMapType()
+                            true
+                        }
+                        R.id.satellite_view -> {
+                            showToast(R.string.satellite_view_selected)
+                            mapsUseCase.selectSatelliteMapType()
+                            true
+                        }
+                        R.id.terrain_view -> {
+                            showToast(R.string.terrain_view_selected)
+                            mapsUseCase.selectTerrainMapType()
+                            true
+                        }
+                        R.id.traffic_view -> {
+                            showToast(R.string.traffic_view_selected)
+                            mapsUseCase.showTraffic()
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
+        )
     }
 
     override fun onMapReady(p0: GoogleMap) {
@@ -113,7 +148,6 @@ class HomeLocationFragment :
                 val originLocation = LatLng(originLatitude, originLongitude)
                 val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
                 mMap = googleMap.also {
-                    it.uiSettings.isMapToolbarEnabled = false
                     it.addMarker(MarkerOptions().position(originLocation))
                     it.addMarker(
                         MarkerOptions().position(destinationLocation)
@@ -126,8 +160,8 @@ class HomeLocationFragment :
                             MAP_ZOOM_14F,
                         ),
                     )
+                    it.uiSettings.isMapToolbarEnabled = false
                     it.setOnPoiClickListener(this)
-                    it.isTrafficEnabled = true
                 }
             }
         }
@@ -140,20 +174,5 @@ class HomeLocationFragment :
             poi.name,
             Toast.LENGTH_SHORT,
         ).show()
-    }
-
-    override fun swipeLeft() {
-        Toast.makeText(requireContext(), "Swiped left", Toast.LENGTH_LONG).show()
-    }
-
-    override fun swipeRight() {
-        Toast.makeText(requireContext(), "Swiped right", Toast.LENGTH_LONG).show()
-    }
-    override fun swipeUp() {
-        Toast.makeText(requireContext(), "Swiped up", Toast.LENGTH_LONG).show()
-    }
-
-    override fun swipeDown() {
-        Toast.makeText(requireContext(), "Swiped down", Toast.LENGTH_LONG).show()
     }
 }
