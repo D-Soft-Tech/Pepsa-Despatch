@@ -41,4 +41,5 @@
     <string name="terrain_view_selected">Terrain view selected</string>
     <string name="traffic_view_selected">Traffic view selected</string>
     <string name="normal_view_selected">Normal view selected</string>
+    <string name="you">You</string>
 </resources>

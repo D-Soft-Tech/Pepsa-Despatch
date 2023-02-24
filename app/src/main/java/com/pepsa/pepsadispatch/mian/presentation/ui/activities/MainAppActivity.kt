@@ -3,6 +3,7 @@ package com.pepsa.pepsadispatch.mian.presentation.ui.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.ActivityMainAppBinding
@@ -19,10 +20,36 @@ class MainAppActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_app)
         bottomNavBar = binding.bottomNavBar
         setSupportActionBar(binding.toolbar)
+
+        bottomNavBar.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.utilites -> {
+                    return@setOnItemSelectedListener true
+                }
+                R.id.tasks -> {
+                    return@setOnItemSelectedListener true
+                }
+                R.id.wallet -> {
+                    return@setOnItemSelectedListener true
+                }
+                R.id.profile_settings -> {
+                    navigateWithoutAction(R.id.destinationRouteFragment)
+                    return@setOnItemSelectedListener true
+                }
+                else -> { // Set home as the default destination
+                    navigateWithoutAction(R.id.homeLocationFragment)
+                    return@setOnItemSelectedListener true
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         bottomNavBar.menu.getItem(2).isChecked = true
+    }
+
+    private fun navigateWithoutAction(destinationId: Int) {
+        findNavController(R.id.fragmentContainerView2).navigate(destinationId)
     }
 }

@@ -10,4 +10,9 @@
         android:name="com.pepsa.pepsadispatch.maps.presentation.ui.fragments.HomeLocationFragment"
         android:label="fragment_home_location"
         tools:layout="@layout/fragment_home_location" />
+    <fragment
+        android:id="@+id/destinationRouteFragment"
+        android:name="com.pepsa.pepsadispatch.maps.presentation.ui.fragments.DestinationRouteFragment"
+        android:label="fragment_destination_route"
+        tools:layout="@layout/fragment_destination_route" />
 </navigation>
