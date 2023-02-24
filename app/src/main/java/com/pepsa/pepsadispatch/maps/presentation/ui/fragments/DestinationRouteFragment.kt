@@ -86,12 +86,16 @@ class DestinationRouteFragment :
         mapFragment =
             childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-        menuProvider = MapsMenuProvider(mMap, mapsUseCase, this)
-        requireActivity().addMenuProvider(
-            menuProvider,
-            viewLifecycleOwner,
-            Lifecycle.State.RESUMED,
-        )
+        mapFragment?.getMapAsync { map ->
+            mMap = map
+            mapsUseCase = MapsUseCase(mMap)
+            menuProvider = MapsMenuProvider(mMap, mapsUseCase, this@DestinationRouteFragment)
+            requireActivity().addMenuProvider(
+                menuProvider,
+                viewLifecycleOwner,
+                Lifecycle.State.RESUMED,
+            )
+        }
     }
 
     override fun onMapReady(p0: GoogleMap) {

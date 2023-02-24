@@ -47,6 +47,7 @@ class MainAppActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bottomNavBar.menu.getItem(2).isChecked = true
+        navigateWithoutAction(R.id.homeLocationFragment)
     }
 
     private fun navigateWithoutAction(destinationId: Int) {

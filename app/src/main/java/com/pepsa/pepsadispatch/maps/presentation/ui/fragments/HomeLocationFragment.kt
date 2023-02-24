@@ -46,7 +46,7 @@ class HomeLocationFragment :
     private var destinationLatitude: Double = 28.5151087
     private var destinationLongitude: Double = 77.3932163
 
-    private val callback = OnMapReadyCallback { googleMap ->
+    private val callback = OnMapReadyCallback { _ ->
         /**
          * Manipulates the map once available.
          * This callback is triggered when the map is ready to be used.
@@ -73,12 +73,28 @@ class HomeLocationFragment :
         super.onViewCreated(view, savedInstanceState)
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
-        menuProvider = MapsMenuProvider(mMap, mapsUseCase, this)
-        requireActivity().addMenuProvider(
-            menuProvider,
-            viewLifecycleOwner,
-            Lifecycle.State.RESUMED,
-        )
+        mapFragment?.getMapAsync { googleMap ->
+            val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
+            mMap = googleMap.also {
+                it.addMarker(MarkerOptions().position(destinationLocation))?.apply {
+                    title = getString(R.string.you)
+                    setIcon(
+                        bitmapFromVector(
+                            requireActivity().applicationContext,
+                            R.drawable.rider_location_icon,
+                        ),
+                    )
+                }
+                it.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        destinationLocation,
+                        MapsConstants.MAP_ZOOM_14F,
+                    ),
+                )
+                it.uiSettings.isMapToolbarEnabled = false
+                it.setOnPoiClickListener(this)
+            }
+        }
     }
 
     override fun onMapReady(p0: GoogleMap) {
@@ -101,6 +117,20 @@ class HomeLocationFragment :
                     originLocation,
                     MapsConstants.MAP_ZOOM_18F,
                 ),
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapFragment?.getMapAsync {
+            mMap = it
+            mapsUseCase = MapsUseCase(mMap)
+            menuProvider = MapsMenuProvider(mMap, mapsUseCase, this@HomeLocationFragment)
+            requireActivity().addMenuProvider(
+                menuProvider,
+                viewLifecycleOwner,
+                Lifecycle.State.RESUMED,
             )
         }
     }
