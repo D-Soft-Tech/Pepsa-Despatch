@@ -85,7 +85,7 @@ class HomeLocationFragment :
                         ),
                     )
                 }
-                it.animateCamera(
+                it.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         destinationLocation,
                         MapsConstants.MAP_ZOOM_14F,
@@ -115,7 +115,7 @@ class HomeLocationFragment :
             animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     originLocation,
-                    MapsConstants.MAP_ZOOM_18F,
+                    MapsConstants.MAP_ZOOM_14F,
                 ),
             )
         }

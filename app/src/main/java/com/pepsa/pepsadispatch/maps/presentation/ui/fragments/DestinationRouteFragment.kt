@@ -108,7 +108,7 @@ class DestinationRouteFragment :
             animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     originLocation,
-                    MapsConstants.MAP_ZOOM_18F,
+                    MapsConstants.MAP_ZOOM_14F,
                 ),
             )
         }
@@ -127,7 +127,7 @@ class DestinationRouteFragment :
                             .title("Pepsa Foods and CO Limited"),
                     )
                     it.addPolyline(routePolyLine)
-                    it.animateCamera(
+                    it.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             originLocation,
                             MapsConstants.MAP_ZOOM_14F,
