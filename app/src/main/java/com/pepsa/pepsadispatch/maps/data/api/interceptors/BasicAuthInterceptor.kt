@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch.shared.data.interceptors
+package com.pepsa.pepsadispatch.maps.data.api.interceptors
 
 import com.pepsa.pepsadispatch.shared.utils.AppConstants.AUTHORIZATION
 import okhttp3.Credentials
