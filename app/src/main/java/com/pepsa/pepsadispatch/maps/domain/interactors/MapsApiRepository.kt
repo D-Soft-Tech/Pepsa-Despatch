@@ -2,7 +2,7 @@ package com.pepsa.pepsadispatch.maps.domain.interactors
 
 import com.google.android.gms.maps.model.LatLng
 import com.pepsa.pepsadispatch.BuildConfig
-import com.pepsa.pepsadispatch.shared.data.models.GetMapRouteMode
+import com.pepsa.pepsadispatch.maps.data.models.GetMapRouteMode
 import io.reactivex.Single
 
 interface MapsApiRepository {

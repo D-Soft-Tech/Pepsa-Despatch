@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch.shared.data.models
+package com.pepsa.pepsadispatch.maps.data.models
 
 enum class GetMapRouteMode(val mode: String) {
     MODE_DRIVING("driving")
