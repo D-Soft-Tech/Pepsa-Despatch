@@ -1,4 +1,4 @@
-package com.pepsa.pepsadispatch.orders.data.models
+package com.pepsa.pepsadispatch.orders.data.models // ktlint-disable filename
 
 import com.google.android.gms.maps.model.LatLng
 
