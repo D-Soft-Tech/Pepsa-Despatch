@@ -12,6 +12,9 @@ import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.ActivityMainAppBinding
 import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.*
 import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
+import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
 import com.pepsa.pepsadispatch.shared.utils.AppUtils.changeStatusBarColor
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -21,7 +24,8 @@ import javax.inject.Inject
 class MainAppActivity : AppCompatActivity() {
     private lateinit var bottomNavBar: BottomNavigationView
     private lateinit var binding: ActivityMainAppBinding
-    private val viewModel: MapViewModel by viewModels()
+    private val mapViewModel: MapViewModel by viewModels()
+    private val orderViewModel: OrdersViewModel by viewModels()
 
     @Inject
     lateinit var firebaseInstance: FirebaseMessaging
@@ -35,27 +39,27 @@ class MainAppActivity : AppCompatActivity() {
         bottomNavBar.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.utilites -> {
-                    viewModel.setAppDestination(UTILITIES)
+                    mapViewModel.setAppDestination(UTILITIES)
                     return@setOnItemSelectedListener true
                 }
                 R.id.tasks -> {
-                    viewModel.setAppDestination(TASKS)
+                    mapViewModel.setAppDestination(TASKS)
                     return@setOnItemSelectedListener true
                 }
                 R.id.wallet -> {
-                    viewModel.setAppDestination(WALLET)
+                    mapViewModel.setAppDestination(WALLET)
                     return@setOnItemSelectedListener true
                 }
                 R.id.profile_settings -> {
-                    if (viewModel.appCurrentDestination.value != PROFILE_SETTINGS) {
-                        viewModel.setAppDestination(PROFILE_SETTINGS)
+                    if (mapViewModel.appCurrentDestination.value != PROFILE_SETTINGS) {
+                        mapViewModel.setAppDestination(PROFILE_SETTINGS)
                         navigateWithoutAction(R.id.destinationRouteFragment)
                     }
                     return@setOnItemSelectedListener true
                 }
                 else -> { // Set home as the default destination
-                    if (viewModel.appCurrentDestination.value != HOME) {
-                        viewModel.setAppDestination(HOME)
+                    if (mapViewModel.appCurrentDestination.value != HOME) {
+                        mapViewModel.setAppDestination(HOME)
                         navigateWithoutAction(R.id.homeLocationFragment)
                     }
                     return@setOnItemSelectedListener true
@@ -89,5 +93,19 @@ class MainAppActivity : AppCompatActivity() {
 
     private fun navigateWithoutAction(destinationId: Int) {
         findNavController(R.id.fragmentContainerView2).navigate(destinationId)
+    }
+
+    private fun listenForIntentOfIncomingOrder() {
+        intent?.action?.let { incomingOrderAction ->
+            intent.getBooleanExtra(TAG_INCOMING_ORDER_RECEIVED, false)
+                .let { thereIsAPendingIncomingOrder ->
+                    if (incomingOrderAction == STRING_INCOMING_ORDER_INTENT_ACTION) {
+                        if (thereIsAPendingIncomingOrder) {
+                            orderViewModel.setPendingIncomingOrderNotification(true)
+                            navigateWithoutAction(R.id.homeLocationFragment)
+                        }
+                    }
+                }
+        }
     }
 }

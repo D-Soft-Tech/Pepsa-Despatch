@@ -42,4 +42,6 @@
     <string name="traffic_view_selected">Traffic view selected</string>
     <string name="normal_view_selected">Normal view selected</string>
     <string name="you">You</string>
+    <string name="incoming_order_from_pd">Incoming Order from  Pepsa Dispatch</string>
+    <string name="order_from">Order from: \n</string>
 </resources>
