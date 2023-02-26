@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.gson.Gson
+import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations
+import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.HOME
 import com.pepsa.pepsadispatch.maps.domain.interactors.MapsApiRepository
 import com.pepsa.pepsadispatch.maps.utils.MapUtils
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants.TAG_GET_ROUTE_ERROR
@@ -28,6 +30,8 @@ class MapViewModel @Inject constructor(
 ) : ViewModel() {
     private val _routePolylineOptions: MutableLiveData<PolylineOptions> = MutableLiveData()
     val routePolylineOptions: LiveData<PolylineOptions> get() = _routePolylineOptions
+    private val _appCurrentDestination: MutableLiveData<AppDestinations> = MutableLiveData(HOME)
+    val appCurrentDestination: LiveData<AppDestinations> get() = _appCurrentDestination
 
     fun getRoute(origin: LatLng, destination: LatLng) {
         val originString = "${origin.latitude},${origin.longitude}"
@@ -47,5 +51,9 @@ class MapViewModel @Inject constructor(
                     Timber.d("$TAG_GET_ROUTE_ERROR%s", it.localizedMessage)
                 }
             }.disposeWith(compositeDisposable)
+    }
+
+    fun setAppDestination(appDestinations: AppDestinations) {
+        _appCurrentDestination.postValue(appDestinations)
     }
 }

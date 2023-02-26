@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -36,7 +37,7 @@ class DestinationRouteFragment :
     GoogleMap.OnPoiClickListener,
     UiComponentUtils {
     private lateinit var binding: FragmentDestinationRouteBinding
-    private val viewModel: MapViewModel by viewModels()
+    private val viewModel: MapViewModel by activityViewModels()
     private var mapFragment: SupportMapFragment? = null
     private lateinit var mapsUseCase: MapsUseCase
     private lateinit var mMap: GoogleMap
