@@ -1,9 +1,9 @@
-package com.pepsa.pepsadispatch.orders.domain
+package com.pepsa.pepsadispatch.orders.domain.models
 
 import com.google.android.gms.maps.model.LatLng
 
 data class OrderDomain(
-    val orderId: Long,
+    val orderId: String,
     val dateTime: String,
     val pickupStore: String,
     val receiverName: String,
@@ -18,4 +18,5 @@ data class OrderDomain(
     val receiverPhoneNumber: String,
     val distance: String,
     val timeTaken: String,
+    var accepted: Boolean? = null
 )

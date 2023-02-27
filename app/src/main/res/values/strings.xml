@@ -44,4 +44,6 @@
     <string name="you">You</string>
     <string name="incoming_order_from_pd">Incoming Order from  Pepsa Dispatch</string>
     <string name="order_from">Order from: \n</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
 </resources>

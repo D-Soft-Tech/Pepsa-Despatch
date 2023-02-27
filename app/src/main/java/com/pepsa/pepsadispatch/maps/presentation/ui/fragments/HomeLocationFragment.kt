@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,6 +24,7 @@ import com.pepsa.pepsadispatch.maps.domain.UiComponentUtils
 import com.pepsa.pepsadispatch.maps.domain.usecases.MapsUseCase
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants
 import com.pepsa.pepsadispatch.maps.utils.MapsMenuProvider
+import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
 import com.pepsa.pepsadispatch.shared.utils.BitmapGeneratorUtils.bitmapFromVector
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,6 +40,7 @@ class HomeLocationFragment :
     private var mapFragment: SupportMapFragment? = null
     private lateinit var mapsUseCase: MapsUseCase
     private lateinit var menuProvider: MapsMenuProvider
+    private val orderViewModel: OrdersViewModel by activityViewModels()
 
     @Inject
     lateinit var gson: Gson

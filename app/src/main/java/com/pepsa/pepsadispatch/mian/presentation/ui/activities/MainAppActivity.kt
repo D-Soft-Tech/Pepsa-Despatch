@@ -8,10 +8,12 @@ import androidx.navigation.findNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.ActivityMainAppBinding
-import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.*
+import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.* // ktlint-disable no-wildcard-imports
 import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
+import com.pepsa.pepsadispatch.orders.domain.models.OrderDomain
 import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
@@ -24,6 +26,9 @@ import javax.inject.Inject
 class MainAppActivity : AppCompatActivity() {
     private lateinit var bottomNavBar: BottomNavigationView
     private lateinit var binding: ActivityMainAppBinding
+
+    @Inject
+    lateinit var gson: Gson
     private val mapViewModel: MapViewModel by viewModels()
     private val orderViewModel: OrdersViewModel by viewModels()
 
@@ -31,6 +36,7 @@ class MainAppActivity : AppCompatActivity() {
     lateinit var firebaseInstance: FirebaseMessaging
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        listenForIntentOfIncomingOrder()
         changeStatusBarColor(R.color.primaryColor)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_app)
         bottomNavBar = binding.bottomNavBar
@@ -97,12 +103,15 @@ class MainAppActivity : AppCompatActivity() {
 
     private fun listenForIntentOfIncomingOrder() {
         intent?.action?.let { incomingOrderAction ->
-            intent.getBooleanExtra(TAG_INCOMING_ORDER_RECEIVED, false)
-                .let { thereIsAPendingIncomingOrder ->
+            intent.getStringExtra(TAG_INCOMING_ORDER_RECEIVED)
+                .let { incomingOrder ->
                     if (incomingOrderAction == STRING_INCOMING_ORDER_INTENT_ACTION) {
-                        if (thereIsAPendingIncomingOrder) {
-                            orderViewModel.setPendingIncomingOrderNotification(true)
-                            navigateWithoutAction(R.id.homeLocationFragment)
+                        incomingOrder?.let { pendingOrder ->
+                            if (pendingOrder.isNotEmpty()) {
+                                val order = gson.fromJson(pendingOrder, OrderDomain::class.java)
+                                orderViewModel.setIncomingOrder(order)
+                                navigateWithoutAction(R.id.homeLocationFragment)
+                            }
                         }
                     }
                 }

@@ -47,7 +47,7 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService() {
         incomingOrderIntent.apply {
             action = STRING_INCOMING_ORDER_INTENT_ACTION
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            putExtra(TAG_INCOMING_ORDER_RECEIVED, true)
+            putExtra(TAG_INCOMING_ORDER_RECEIVED, gson.toJson(incomingOrder))
         }
         val pendingIntent = PendingIntent.getActivity(
             this,
