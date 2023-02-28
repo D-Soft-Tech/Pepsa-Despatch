@@ -58,8 +58,7 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOw
     override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     override fun onNewToken(token: String) {
-        scheduleJobToUpdateDeviceTokenToServer()
-        super.onNewToken(token)
+        Timber.d("NEW_TOKEN_TOKEN=====>%s", token)
     }
 
     override fun onMessageReceived(deliveryOrder: RemoteMessage) {

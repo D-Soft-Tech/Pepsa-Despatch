@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class WelcomeScreensActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

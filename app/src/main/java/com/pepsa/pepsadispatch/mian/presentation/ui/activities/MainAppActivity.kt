@@ -89,14 +89,14 @@ class MainAppActivity : AppCompatActivity() {
         firebaseInstance: FirebaseMessaging,
         actionToPerformWithToken: (appToken: String) -> Unit,
     ) {
-        firebaseInstance.token.addOnCanceledListener {
+        firebaseInstance.token.addOnCompleteListener(
             OnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val deviceToken = task.result
                     actionToPerformWithToken(deviceToken)
                 }
-            }
-        }
+            },
+        )
     }
 
     private fun navigateWithoutAction(destinationId: Int) {

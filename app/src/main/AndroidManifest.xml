@@ -28,6 +28,12 @@
              "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
         -->
         <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/png_pepsa_dispatch_logo" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/primaryColor" />
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${PLACE_API_KEY}" />
 
@@ -40,7 +46,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".welcomeScreens.presentation.ui.activities.MainActivity"
+            android:name=".welcomeScreens.presentation.ui.activities.WelcomeScreensActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,6 +59,15 @@
                 android:value="" />
         </activity>
 
+        <service
+            android:name=".orders.data.services.GetOrderFirebaseMessagingService"
+            android:exported="false"
+            tools:ignore="Instantiable">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -60,5 +75,4 @@
             android:name="mapsKey"
             android:value="${PLACE_API_KEY}" />
     </application>
-
 </manifest>
