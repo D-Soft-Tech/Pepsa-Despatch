@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
@@ -32,10 +33,11 @@ class MainAppActivity : AppCompatActivity() {
     private val mapViewModel: MapViewModel by viewModels()
     private val orderViewModel: OrdersViewModel by viewModels()
 
-    @Inject
-    lateinit var firebaseInstance: FirebaseMessaging
+    private lateinit var firebaseInstance: FirebaseMessaging
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+        firebaseInstance = FirebaseMessaging.getInstance()
         listenForIntentOfIncomingOrder()
         changeStatusBarColor(R.color.primaryColor)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_app)

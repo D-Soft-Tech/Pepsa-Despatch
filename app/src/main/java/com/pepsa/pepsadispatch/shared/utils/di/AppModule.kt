@@ -1,6 +1,5 @@
 package com.pepsa.pepsadispatch.shared.utils.di
 
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -33,8 +32,4 @@ object AppModule {
     @Provides
     @Named("main-thread-scheduler")
     fun providesMainThreadScheduler(): Scheduler = AndroidSchedulers.mainThread()
-
-    @Singleton
-    @Provides
-    fun getFirebaseInstance(): FirebaseMessaging = FirebaseMessaging.getInstance()
 }

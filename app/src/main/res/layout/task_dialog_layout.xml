@@ -12,8 +12,6 @@
         <variable
             name="orderViewModel"
             type="com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel" />
-
-        <import type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

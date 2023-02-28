@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ContextWrapper
 import android.util.Log
 import androidx.work.Configuration
+import com.google.firebase.FirebaseApp
 import com.pixplicity.easyprefs.library.Prefs
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
