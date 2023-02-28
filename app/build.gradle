@@ -103,4 +103,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect"
     // Permission
     implementation "pub.devrel:easypermissions:$easy_permissions"
+    // Work Manager
+    implementation "androidx.work:work-runtime-ktx:$work_manager_version"
 }

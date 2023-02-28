@@ -10,10 +10,12 @@ import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations
 import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.HOME
 import com.pepsa.pepsadispatch.maps.domain.interactors.MapsApiRepository
 import com.pepsa.pepsadispatch.maps.utils.MapUtils
+import com.pepsa.pepsadispatch.maps.utils.MapsConstants.TAG_GET_DISTANCE_ERROR
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants.TAG_GET_ROUTE_ERROR
 import com.pepsa.pepsadispatch.shared.utils.AppUtils.disposeWith
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,19 +42,12 @@ class MapViewModel @Inject constructor(
     val appCurrentDestination: LiveData<AppDestinations> get() = _appCurrentDestination
 
     fun getRoute(origin: LatLng, destination: LatLng) {
-        val originString = "${origin.latitude},${origin.longitude}"
-        val destinationString = "${destination.latitude},${destination.longitude}"
-        mapsApiRepository.getRoutePath(
-            originString,
-            destinationString,
-        ).subscribeOn(ioScheduler)
-            .observeOn(mainThreadScheduler)
+        getRouteBetweenTwoPoints(origin, destination)
             .subscribe { routeData, error ->
                 routeData?.let {
                     _routePolylineOptions.postValue(
                         mapUtils.convertRouteFromLatLngToLineOption(it.first),
                     )
-                    _routeDistanceAndTime.postValue(it.second!!)
                 }
                 error?.let {
                     Timber.d("$TAG_GET_ROUTE_ERROR%s", it.localizedMessage)
@@ -60,7 +55,37 @@ class MapViewModel @Inject constructor(
             }.disposeWith(compositeDisposable)
     }
 
+    private fun getRouteBetweenTwoPoints(
+        origin: LatLng,
+        destination: LatLng,
+    ): Single<Pair<ArrayList<List<LatLng>>, Pair<Int, Int>>> {
+        val originString = "${origin.latitude},${origin.longitude}"
+        val destinationString = "${destination.latitude},${destination.longitude}"
+        return mapsApiRepository.getRoutePath(
+            originString,
+            destinationString,
+        ).subscribeOn(ioScheduler)
+            .observeOn(mainThreadScheduler)
+    }
+
+    fun getDistanceAndDurationBtwTwoLocations(origin: LatLng, destination: LatLng) {
+        getRouteBetweenTwoPoints(origin, destination)
+            .subscribe { routeData, error ->
+                routeData?.let {
+                    _routeDistanceAndTime.postValue(it.second!!)
+                }
+                error?.let {
+                    Timber.d("$TAG_GET_DISTANCE_ERROR%s", it.localizedMessage)
+                }
+            }.disposeWith(compositeDisposable)
+    }
+
     fun setAppDestination(appDestinations: AppDestinations) {
         _appCurrentDestination.postValue(appDestinations)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }
