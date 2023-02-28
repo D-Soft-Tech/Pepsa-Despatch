@@ -14,6 +14,7 @@ import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.ActivityMainAppBinding
 import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.* // ktlint-disable no-wildcard-imports
 import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
+import com.pepsa.pepsadispatch.orders.data.models.OrderEntity
 import com.pepsa.pepsadispatch.orders.domain.models.OrderDomain
 import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
@@ -75,12 +76,31 @@ class MainAppActivity : AppCompatActivity() {
             }
         }
         getFirebaseDeviceToken(firebaseInstance) {
-            Timber.d("DEVICE_TOKEN===>%s", it)
+            // cgxpvGMKQYy_MQY4T0JvIk:APA91bGzY161XxySQiG7Oa7DBNn77s_INMjjOXeWwkkIGSHR7s_z9EVsJubl86Xdoij-XjOjFZiGhLxqAzJ6vZ70Crkgyfh8UdMBxtEEDv9rmNCky5DHlAVQ32vIW2JXLR2jS7mHkPc8
         }
     }
 
     override fun onResume() {
         super.onResume()
+        val sampleOrderEntity = OrderEntity(
+            8755643773,
+            "18–06–2022 14:25:00",
+            "Foodco Supermarket",
+            "Adebayo Oloyede",
+            "1, Baptist bus-stop, Gen gas-Akobo Road, Ibadan",
+            "22, Ogunmola house, alegongo nickdel college, akobo, ibadan",
+            "WeelDrop Filling Station",
+            "Nickdel School",
+            "506",
+            3.90616,
+            7.4404,
+            7.396389,
+            3.916667,
+            "08058688148",
+            "09075771869",
+        )
+        val sampleOrderJson = gson.toJson(sampleOrderEntity)
+        Timber.d("SAMPLE_ORDER===>%s", sampleOrderJson)
         bottomNavBar.menu.getItem(2).isChecked = true
         navigateWithoutAction(R.id.homeLocationFragment)
     }
