@@ -10,7 +10,7 @@ class NetworkUtils @Inject constructor() {
     fun <T> getServerResponse(serverResponse: Response<T>): ViewState<T> {
         return when {
             serverResponse.code() in 200..299 -> {
-                ViewState.success(serverResponse.body())
+                ViewState.success(serverResponse.body()!!)
             }
             serverResponse.code() in 400..499 -> {
                 ViewState.error(null)

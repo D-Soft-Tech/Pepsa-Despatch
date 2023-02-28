@@ -43,13 +43,13 @@ class MapViewModel @Inject constructor(
             .subscribe { routeData, error ->
                 routeData?.let {
                     _routePolylineOptions.postValue(
-                        it.content?.let { pair ->
+                        if (it.content != null) {
                             ViewState(
-                                content = mapUtils.convertRouteFromLatLngToLineOption(pair.first),
+                                content = mapUtils.convertRouteFromLatLngToLineOption(it.content.first),
                                 message = it.message,
                                 status = it.status,
                             )
-                        }?.run {
+                        } else {
                             ViewState(
                                 content = mapUtils.convertRouteFromLatLngToLineOption(null),
                                 message = it.message,

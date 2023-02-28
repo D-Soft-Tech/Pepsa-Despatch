@@ -4,8 +4,10 @@ import android.app.AlertDialog
 import android.app.Dialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.shared.utils.AppUtils.showSnackBar
+import timber.log.Timber
 
 data class ViewState<out T>(
     val status: Status,
@@ -13,7 +15,7 @@ data class ViewState<out T>(
     val message: String,
 ) {
     companion object {
-        fun <T> success(content: T?): ViewState<T> = ViewState(
+        fun <T> success(content: T): ViewState<T> = ViewState(
             Status.SUCCESS,
             content,
             "Success",
