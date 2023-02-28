@@ -11,18 +11,26 @@ import javax.inject.Singleton
 
 @Singleton
 class MapUtils @Inject constructor(private val gson: Gson) {
-    fun mapMapDataToArrayListOfLatLng(respObj: MapData): ArrayList<List<LatLng>> {
+    fun mapMapDataToArrayListOfLatLng(respObj: MapData): Pair<ArrayList<List<LatLng>>, Pair<Int, Int>> {
         val result = ArrayList<List<LatLng>>()
+        val distanceTime: ArrayList<Int> = ArrayList()
+        var distance = 0
+        var duration = 0
         try {
             val path = ArrayList<LatLng>()
             for (i in 0 until respObj.routes[0].legs[0].steps.size) {
+                distance += respObj.routes[0].legs[0].distance.value
+                duration += respObj.routes[0].legs[0].duration.value
                 path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
             }
+            distanceTime.add(0, distance)
+            distanceTime.add(1, duration)
             result.add(path)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return result
+        val distanceDuration: Pair<Int, Int> = Pair(distanceTime[0], distanceTime[1])
+        return Pair(result, distanceDuration)
     }
 
     private fun decodePolyline(encoded: String): List<LatLng> {

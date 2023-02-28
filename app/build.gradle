@@ -99,4 +99,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
+    // Kotlin reflexion
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_reflect"
+    // Permission
+    implementation "pub.devrel:easypermissions:$easy_permissions"
 }

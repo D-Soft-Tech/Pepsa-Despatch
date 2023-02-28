@@ -28,8 +28,14 @@ class MapViewModel @Inject constructor(
     @Named("io-scheduler") private val ioScheduler: Scheduler,
     @Named("main-thread-scheduler") private val mainThreadScheduler: Scheduler,
 ) : ViewModel() {
+    // Route
     private val _routePolylineOptions: MutableLiveData<PolylineOptions> = MutableLiveData()
     val routePolylineOptions: LiveData<PolylineOptions> get() = _routePolylineOptions
+
+    // Distance and Time
+    private val _routeDistanceAndTime: MutableLiveData<Pair<Int, Int>> = MutableLiveData()
+    val routeDistanceAndTime: LiveData<Pair<Int, Int>> get() = _routeDistanceAndTime
+
     private val _appCurrentDestination: MutableLiveData<AppDestinations> = MutableLiveData(HOME)
     val appCurrentDestination: LiveData<AppDestinations> get() = _appCurrentDestination
 
@@ -44,8 +50,9 @@ class MapViewModel @Inject constructor(
             .subscribe { routeData, error ->
                 routeData?.let {
                     _routePolylineOptions.postValue(
-                        mapUtils.convertRouteFromLatLngToLineOption(it),
+                        mapUtils.convertRouteFromLatLngToLineOption(it.first),
                     )
+                    _routeDistanceAndTime.postValue(it.second!!)
                 }
                 error?.let {
                     Timber.d("$TAG_GET_ROUTE_ERROR%s", it.localizedMessage)

@@ -12,5 +12,5 @@ interface MapsApiRepository {
         sensor: Boolean = false,
         mode: String = GetMapRouteMode.MODE_DRIVING.mode,
         key: String = BuildConfig.PLACE_API_KEY,
-    ): Single<ArrayList<List<LatLng>>>
+    ): Single<Pair<ArrayList<List<LatLng>>, Pair<Int, Int>>>
 }

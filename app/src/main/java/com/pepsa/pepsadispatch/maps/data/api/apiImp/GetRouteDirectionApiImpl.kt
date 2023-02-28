@@ -19,7 +19,7 @@ class GetRouteDirectionApiImpl @Inject constructor(
         sensor: Boolean,
         mode: String,
         key: String,
-    ): Single<ArrayList<List<LatLng>>> =
+    ): Single<Pair<ArrayList<List<LatLng>>, Pair<Int, Int>>> =
         getRouteDirectionApi.getRouteDirection(origin, destination, sensor, mode, key)
             .flatMap {
                 Single.just(mapUtils.mapMapDataToArrayListOfLatLng(it))

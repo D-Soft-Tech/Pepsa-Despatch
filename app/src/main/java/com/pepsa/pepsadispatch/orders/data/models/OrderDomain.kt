@@ -1,7 +1,5 @@
 package com.pepsa.pepsadispatch.orders.data.models // ktlint-disable filename
 
-import com.google.android.gms.maps.model.LatLng
-
 data class OrderEntity(
     val orderId: Long,
     val dateTime: String,
@@ -12,9 +10,10 @@ data class OrderEntity(
     val landMark1: String,
     val landMark2: String,
     val taskPrice: String,
-    val pickUpLongitude: Long,
-    val pickUpLatitude: Long,
-    val destinationCoordinate: LatLng,
+    val pickUpLongitude: Double,
+    val pickUpLatitude: Double,
+    val destinationLatitude: Double,
+    val destinationLongitude: Double,
     val pickupStorePhoneContact: String,
-    val receiverPhoneNumber: String
+    val receiverPhoneNumber: String,
 )
