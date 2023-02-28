@@ -1,6 +1,7 @@
 package com.pepsa.pepsadispatch.shared.presentation.viewStates
 
 import android.app.AlertDialog
+import android.app.Dialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.pepsa.pepsadispatch.R
@@ -50,23 +51,27 @@ data class ViewState<out T>(
 
         fun <T> Fragment.observeServerResponse(
             serverResponse: LiveData<ViewState<T>>,
-            loader: AlertDialog,
-            successAction: () -> Unit,
+            loader: Dialog,
+            successAction: (response: T) -> Unit,
         ) {
             serverResponse.observe(viewLifecycleOwner) {
                 when (it.status) {
                     Status.SUCCESS -> {
+                        loader.dismiss()
                         loader.cancel()
-                        successAction()
+                        successAction(it.content!!)
                     }
                     Status.SERVER_ERROR -> {
+                        loader.dismiss()
                         loader.cancel()
                         showSnackBar(R.string.server_error)
                     }
                     Status.INITIAL_DEFAULT -> {
+                        loader.dismiss()
                         loader.cancel()
                     }
                     Status.TIMEOUT -> {
+                        loader.dismiss()
                         loader.cancel()
                         showSnackBar(R.string.time_out)
                     }
@@ -74,6 +79,7 @@ data class ViewState<out T>(
                         loader.show()
                     }
                     Status.ERROR -> {
+                        loader.dismiss()
                         loader.cancel()
                         showSnackBar(R.string.failed_tryagain)
                     }

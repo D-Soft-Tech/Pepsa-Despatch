@@ -1,6 +1,7 @@
 package com.pepsa.pepsadispatch.shared.utils
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.view.Window
@@ -11,6 +12,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.shared.utils.AppConstants.MAPS_KEY
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -61,4 +63,11 @@ object AppUtils {
         Snackbar.make(requireView().rootView, getString(stringMessageId), Snackbar.LENGTH_SHORT)
             .show()
     }
+
+    fun Fragment.getLoaderDialog(): Dialog =
+        Dialog(requireContext(), android.R.style.Theme_Light).apply {
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            setContentView(R.layout.loader_layout)
+            setCancelable(false)
+        }
 }

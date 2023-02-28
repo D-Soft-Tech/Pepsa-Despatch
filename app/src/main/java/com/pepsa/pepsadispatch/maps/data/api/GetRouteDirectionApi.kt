@@ -15,13 +15,4 @@ interface GetRouteDirectionApi {
         @Query("mode") mode: String,
         @Query("key") key: String,
     ): Single<Response<MapData>>
-
-    @GET("maps/api/directions/json")
-    fun getRouteDirection2(
-        @Query("origin") origin: String,
-        @Query("destination") destination: String,
-        @Query("sensor") sensor: Boolean,
-        @Query("mode") mode: String,
-        @Query("key") key: String,
-    ): Single<Response<MapData>>
 }

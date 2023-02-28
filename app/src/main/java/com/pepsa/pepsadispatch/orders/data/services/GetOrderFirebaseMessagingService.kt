@@ -23,9 +23,12 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
+import com.pepsa.pepsadispatch.maps.domain.models.MapData
+import com.pepsa.pepsadispatch.maps.utils.MapUtils
 import com.pepsa.pepsadispatch.mian.presentation.ui.activities.MainAppActivity
 import com.pepsa.pepsadispatch.orders.data.models.OrderEntity
 import com.pepsa.pepsadispatch.orders.data.workers.GetOrderRouteWorker
+import com.pepsa.pepsadispatch.orders.domain.models.OrderDomain
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INCOMING_ORDER_NOTIFICATION_CHANNEL_ID
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_NOTIFICATION_ID
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_ORDER_PENDING_INTENT_REQUEST_CODE
@@ -33,13 +36,14 @@ import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_R
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
+import com.pepsa.pepsadispatch.orders.utils.mappers.EntityMappers.toDomain
 import timber.log.Timber
-import java.util.*
 
 class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val gson: Gson = Gson()
     private val workManagerInstance: WorkManager = WorkManager.getInstance(this)
+    private val mapsUtils: MapUtils = MapUtils(gson)
 
     override fun onCreate() {
         super.onCreate()
@@ -65,13 +69,13 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOw
                 gson.fromJson(it, OrderEntity::class.java)
             }
             taskOrder?.let {
-                createNotification(it)
-                startRinging()
+                // Get the route first
+                scheduleWorkToGetOrderRoute(it)
             }
         }
     }
 
-    private fun createNotification(incomingOrder: OrderEntity) {
+    private fun createNotification(incomingOrder: OrderDomain) {
         val incomingOrderIntent = Intent(this, MainAppActivity::class.java)
         incomingOrderIntent.apply {
             action = STRING_INCOMING_ORDER_INTENT_ACTION
@@ -137,14 +141,18 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOw
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        val work = OneTimeWorkRequest.Builder(GetOrderRouteWorker::class.java)
+        val workRequest = OneTimeWorkRequest.Builder(GetOrderRouteWorker::class.java)
             .setConstraints(constraints)
             .setInputData(inputData)
             .build()
-        workManagerInstance.beginWith(work).enqueue() // Start work
+        workManagerInstance.beginWith(workRequest).enqueue()
+        listenForWorkManagerOutputData(workRequest, incomingOrder)
     }
 
-    private fun listenForWorkManagerOutputData(workRequest: WorkRequest) {
+    private fun listenForWorkManagerOutputData(
+        workRequest: WorkRequest,
+        inComingOrderEntity: OrderEntity,
+    ) {
         workManagerInstance.getWorkInfoByIdLiveData(workRequest.id)
             .observe(this) { workInfo ->
                 if (workInfo != null && workInfo.state === WorkInfo.State.SUCCEEDED) {
@@ -152,7 +160,16 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOw
                     val response =
                         outputData.getString(STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG)
                     response?.let {
-
+                        if (it.isNotEmpty()) {
+                            val mapData = gson.fromJson(it, MapData::class.java)
+                            val distance =
+                                mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.first
+                            val duration =
+                                mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.second
+                            val orderEntity = inComingOrderEntity.toDomain(distance, duration)
+                            createNotification(orderEntity)
+                            startRinging()
+                        }
                     }
                 }
             }

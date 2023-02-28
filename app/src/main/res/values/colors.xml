@@ -19,4 +19,5 @@
     <color name="grey">#F2F3F7</color>
     <color name="online">#06D37D</color>
     <color name="offline">#D9DBDBDB</color>
+    <color name="transparent_with_color">#0DFFFFFF</color>
 </resources>

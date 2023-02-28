@@ -27,6 +27,7 @@ import com.pepsa.pepsadispatch.maps.presentation.viewModels.MapViewModel
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants
 import com.pepsa.pepsadispatch.maps.utils.MapsMenuProvider
 import com.pepsa.pepsadispatch.shared.presentation.viewStates.ViewState.Companion.observeServerResponse
+import com.pepsa.pepsadispatch.shared.utils.AppUtils.getLoaderDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -117,9 +118,7 @@ class DestinationRouteFragment :
 
     override fun onResume() {
         super.onResume()
-        observeServerResponse(viewModel.routePolylineOptions, )
-        viewModel.routePolylineOptions.observe(viewLifecycleOwner) { routePolyLine ->
-
+        observeServerResponse(viewModel.routePolylineOptions, getLoaderDialog()) { polyLineOption ->
             mapFragment?.getMapAsync { googleMap ->
                 val originLocation = LatLng(originLatitude, originLongitude)
                 val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
@@ -129,7 +128,7 @@ class DestinationRouteFragment :
                         MarkerOptions().position(destinationLocation)
                             .title("Pepsa Foods and CO Limited"),
                     )
-                    it.addPolyline(routePolyLine)
+                    it.addPolyline(polyLineOption!!)
                     it.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             originLocation,
