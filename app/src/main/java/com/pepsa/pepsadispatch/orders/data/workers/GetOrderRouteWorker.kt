@@ -1,37 +1,38 @@
 package com.pepsa.pepsadispatch.orders.data.workers
 
+import android.annotation.SuppressLint
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.Data
+import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.pepsa.pepsadispatch.BuildConfig
 import com.pepsa.pepsadispatch.maps.data.api.GetRouteDirectionApi
 import com.pepsa.pepsadispatch.maps.data.models.GetMapRouteMode
-import com.pepsa.pepsadispatch.maps.domain.models.MapData
 import com.pepsa.pepsadispatch.orders.data.models.OrderEntity
-import com.pepsa.pepsadispatch.orders.domain.interactors.GetOrderRouteCallBack
-import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_INPUT_TAG
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_INPUT_DATA_TAG
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG
 import com.pepsa.pepsadispatch.orders.utils.manualNetworkOperations.GetRetrofit.providesGetRouteDirectionApi
-import com.pepsa.pepsadispatch.shared.utils.AppUtils.disposeWith
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.CountDownLatch
+import io.reactivex.Single
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 class GetOrderRouteWorker(
     context: Context,
     workerParameters: WorkerParameters,
-    private val getOrderRouteCallBack: GetOrderRouteCallBack,
-    private val ioScheduler: Scheduler = Schedulers.io(),
-    private val mainThreadSchedulers: Scheduler = AndroidSchedulers.mainThread(),
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable(),
     private val gson: Gson = Gson(),
     private val getRouteApi: GetRouteDirectionApi = providesGetRouteDirectionApi(),
-) : Worker(context, workerParameters) {
-    override fun doWork(): Result {
-        val inputData = inputData.getString(STRING_GET_ROUTE_ORDER_WORKER_INPUT_TAG)
+) : RxWorker(context, workerParameters) {
+    /*
+    private val ioScheduler: Scheduler = Schedulers.io()
+    private val mainThreadSchedulers: Scheduler = AndroidSchedulers.mainThread()
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private val gson: Gson = Gson()
+    private val getRouteApi: GetRouteDirectionApi = providesGetRouteDirectionApi()
+    * */
+    override fun createWork(): Single<Result> {
+        val inputData = inputData.getString(STRING_GET_ROUTE_ORDER_WORKER_INPUT_DATA_TAG)
         val incomingOrderEntity = gson.fromJson(inputData, OrderEntity::class.java)
         val origin = LatLng(incomingOrderEntity.pickUpLatitude, incomingOrderEntity.pickUpLongitude)
         val destination = LatLng(
@@ -41,33 +42,29 @@ class GetOrderRouteWorker(
         val originString = "${origin.latitude},${origin.longitude}"
         val destinationString = "${destination.latitude},${destination.longitude}"
 
-        val latch = CountDownLatch(1)
-        var result: MapData? = null
-        getRouteApi.getRouteDirection(
+        return getRouteApi.getRouteDirection2(
             originString,
             destinationString,
             false,
             GetMapRouteMode.MODE_DRIVING.mode,
             BuildConfig.PLACE_API_KEY,
-        ).subscribeOn(ioScheduler)
-            .observeOn(mainThreadSchedulers)
-            .subscribe { route, error ->
-                route.let {
-                    result = it
-                    getOrderRouteCallBack.onGetRouteSuccess(it)
-                    latch.countDown()
-                }
-                error.let {
-                    result = null
-                    it?.localizedMessage?.let { errorMessage ->
-                        getOrderRouteCallBack.onGetRouteError(
-                            errorMessage,
-                        )
-                    }
-                    latch.countDown()
-                }
-            }.disposeWith(compositeDisposable)
-        latch.await()
-        return if (result != null) Result.success() else Result.failure()
+        ).flatMap {
+            if (it.isSuccessful) {
+                val outputValue = gson.toJson(it.body())
+                val outputData = Data.Builder()
+                    .putString(STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG, outputValue)
+                    .build()
+                Single.just(Result.success(outputData))
+            } else {
+                val outputData = Data.Builder()
+                    .putString(STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG, "")
+                    .build()
+                Single.just(Result.failure(outputData))
+            }
+        }
     }
+
+    @SuppressLint("RestrictedApi")
+    override fun getBackgroundExecutor(): Executor =
+        Executors.newSingleThreadExecutor()
 }

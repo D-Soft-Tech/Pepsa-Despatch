@@ -65,9 +65,9 @@ class MapUtils @Inject constructor(private val gson: Gson) {
         return poly
     }
 
-    fun convertRouteFromLatLngToLineOption(route: ArrayList<List<LatLng>>): PolylineOptions {
+    fun convertRouteFromLatLngToLineOption(route: ArrayList<List<LatLng>>?): PolylineOptions? {
         val lineOption = PolylineOptions()
-        route.forEach { latLng ->
+        route?.forEach { latLng ->
             lineOption.apply {
                 addAll(latLng)
                 width(MAP_LINE_WIDTH_10)
@@ -75,6 +75,6 @@ class MapUtils @Inject constructor(private val gson: Gson) {
                 geodesic(true)
             }
         }
-        return lineOption
+        return if (route != null) lineOption else null
     }
 }

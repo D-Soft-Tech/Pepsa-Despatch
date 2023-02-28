@@ -10,6 +10,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.pepsa.pepsadispatch.shared.utils.AppConstants.MAPS_KEY
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -54,5 +55,10 @@ object AppUtils {
 
     fun Fragment.showToast(@StringRes stringMessageId: Int) {
         Toast.makeText(requireContext(), getString(stringMessageId), Toast.LENGTH_SHORT).show()
+    }
+
+    fun Fragment.showSnackBar(@StringRes stringMessageId: Int) {
+        Snackbar.make(requireView().rootView, getString(stringMessageId), Snackbar.LENGTH_SHORT)
+            .show()
     }
 }

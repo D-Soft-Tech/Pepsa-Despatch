@@ -10,8 +10,8 @@ import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations
 import com.pepsa.pepsadispatch.maps.data.models.enums.AppDestinations.HOME
 import com.pepsa.pepsadispatch.maps.domain.interactors.MapsApiRepository
 import com.pepsa.pepsadispatch.maps.utils.MapUtils
-import com.pepsa.pepsadispatch.maps.utils.MapsConstants.TAG_GET_DISTANCE_ERROR
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants.TAG_GET_ROUTE_ERROR
+import com.pepsa.pepsadispatch.shared.presentation.viewStates.ViewState
 import com.pepsa.pepsadispatch.shared.utils.AppUtils.disposeWith
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Scheduler
@@ -31,12 +31,9 @@ class MapViewModel @Inject constructor(
     @Named("main-thread-scheduler") private val mainThreadScheduler: Scheduler,
 ) : ViewModel() {
     // Route
-    private val _routePolylineOptions: MutableLiveData<PolylineOptions> = MutableLiveData()
-    val routePolylineOptions: LiveData<PolylineOptions> get() = _routePolylineOptions
-
-    // Distance and Time
-    private val _routeDistanceAndTime: MutableLiveData<Pair<Int, Int>> = MutableLiveData()
-    val routeDistanceAndTime: LiveData<Pair<Int, Int>> get() = _routeDistanceAndTime
+    private val _routePolylineOptions: MutableLiveData<ViewState<PolylineOptions?>> =
+        MutableLiveData()
+    val routePolylineOptions: LiveData<ViewState<PolylineOptions?>> get() = _routePolylineOptions
 
     private val _appCurrentDestination: MutableLiveData<AppDestinations> = MutableLiveData(HOME)
     val appCurrentDestination: LiveData<AppDestinations> get() = _appCurrentDestination
@@ -46,7 +43,19 @@ class MapViewModel @Inject constructor(
             .subscribe { routeData, error ->
                 routeData?.let {
                     _routePolylineOptions.postValue(
-                        mapUtils.convertRouteFromLatLngToLineOption(it.first),
+                        it.content?.let { pair ->
+                            ViewState(
+                                content = mapUtils.convertRouteFromLatLngToLineOption(pair.first),
+                                message = it.message,
+                                status = it.status,
+                            )
+                        }?.run {
+                            ViewState(
+                                content = mapUtils.convertRouteFromLatLngToLineOption(null),
+                                message = it.message,
+                                status = it.status,
+                            )
+                        },
                     )
                 }
                 error?.let {
@@ -58,7 +67,7 @@ class MapViewModel @Inject constructor(
     private fun getRouteBetweenTwoPoints(
         origin: LatLng,
         destination: LatLng,
-    ): Single<Pair<ArrayList<List<LatLng>>, Pair<Int, Int>>> {
+    ): Single<ViewState<Pair<ArrayList<List<LatLng>>, Pair<Int, Int>>?>> {
         val originString = "${origin.latitude},${origin.longitude}"
         val destinationString = "${destination.latitude},${destination.longitude}"
         return mapsApiRepository.getRoutePath(
@@ -66,18 +75,6 @@ class MapViewModel @Inject constructor(
             destinationString,
         ).subscribeOn(ioScheduler)
             .observeOn(mainThreadScheduler)
-    }
-
-    fun getDistanceAndDurationBtwTwoLocations(origin: LatLng, destination: LatLng) {
-        getRouteBetweenTwoPoints(origin, destination)
-            .subscribe { routeData, error ->
-                routeData?.let {
-                    _routeDistanceAndTime.postValue(it.second!!)
-                }
-                error?.let {
-                    Timber.d("$TAG_GET_DISTANCE_ERROR%s", it.localizedMessage)
-                }
-            }.disposeWith(compositeDisposable)
     }
 
     fun setAppDestination(appDestinations: AppDestinations) {

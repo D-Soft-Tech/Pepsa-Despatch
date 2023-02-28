@@ -46,4 +46,7 @@
     <string name="order_from">Order from: \n</string>
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
+    <string name="server_error">Server error, kindly try again later</string>
+    <string name="time_out">Time out! Please try again later</string>
+    <string name="failed_tryagain">Failed, please try again</string>
 </resources>

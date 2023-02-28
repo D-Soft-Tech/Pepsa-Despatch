@@ -105,4 +105,5 @@ dependencies {
     implementation "pub.devrel:easypermissions:$easy_permissions"
     // Work Manager
     implementation "androidx.work:work-runtime-ktx:$work_manager_version"
+    implementation "androidx.work:work-rxjava2:$work_manager_version"
 }

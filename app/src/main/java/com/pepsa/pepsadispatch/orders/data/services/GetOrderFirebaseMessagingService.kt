@@ -9,21 +9,50 @@ import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.mian.presentation.ui.activities.MainAppActivity
 import com.pepsa.pepsadispatch.orders.data.models.OrderEntity
+import com.pepsa.pepsadispatch.orders.data.workers.GetOrderRouteWorker
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INCOMING_ORDER_NOTIFICATION_CHANNEL_ID
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_NOTIFICATION_ID
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_ORDER_PENDING_INTENT_REQUEST_CODE
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_INPUT_DATA_TAG
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
 import timber.log.Timber
+import java.util.*
 
-class GetOrderFirebaseMessagingService : FirebaseMessagingService() {
+class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOwner {
+    private val lifecycleRegistry = LifecycleRegistry(this)
     private val gson: Gson = Gson()
+    private val workManagerInstance: WorkManager = WorkManager.getInstance(this)
+
+    override fun onCreate() {
+        super.onCreate()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    }
+
+    override fun getLifecycle(): Lifecycle = lifecycleRegistry
+
     override fun onNewToken(token: String) {
         scheduleJobToUpdateDeviceTokenToServer()
         super.onNewToken(token)
@@ -96,5 +125,36 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun scheduleJobToUpdateDeviceTokenToServer() {
+        // https://www.youtube.com/watch?v=5Bo1rOgWS-Y&ab_channel=LevitesWATCHTV
+    }
+
+    private fun scheduleWorkToGetOrderRoute(incomingOrder: OrderEntity) {
+        val order = gson.toJson(incomingOrder)
+        val inputData: Data = Data.Builder()
+            .putString(STRING_GET_ROUTE_ORDER_WORKER_INPUT_DATA_TAG, order)
+            .build()
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val work = OneTimeWorkRequest.Builder(GetOrderRouteWorker::class.java)
+            .setConstraints(constraints)
+            .setInputData(inputData)
+            .build()
+        workManagerInstance.beginWith(work).enqueue() // Start work
+    }
+
+    private fun listenForWorkManagerOutputData(workRequest: WorkRequest) {
+        workManagerInstance.getWorkInfoByIdLiveData(workRequest.id)
+            .observe(this) { workInfo ->
+                if (workInfo != null && workInfo.state === WorkInfo.State.SUCCEEDED) {
+                    val outputData = workInfo.outputData
+                    val response =
+                        outputData.getString(STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG)
+                    response?.let {
+
+                    }
+                }
+            }
     }
 }
