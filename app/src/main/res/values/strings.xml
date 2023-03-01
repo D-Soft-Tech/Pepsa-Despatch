@@ -21,6 +21,7 @@
     <string name="profile">Profile</string>
     <string name="online">Online</string>
     <string name="order_id_text_place_holder">Order ID: 8755643773</string>
+    <string name="order_id_place_holder">Order ID: &#160; %1s</string>
     <string name="task_date_place_holder">Date/Time: &#160;18–06–2022 &#160;14:25:00</string>
     <string name="store_name_tv">Foodco Supermarket</string>
     <string name="store_address_tv">1, Baptist bus-stop, Gen gas-Akobo Road, Ibadan</string>
@@ -28,6 +29,7 @@
     <string name="address_2">22, Ogunmola house, alegongo nickdel college, akobo, ibadan</string>
     <string name="school_name_two">Nickdel School</string>
     <string name="task_pay_price_txt_place_holder">₦310.99</string>
+    <string name="naira_symbol">₦ %1s</string>
     <string name="route">Route</string>
     <string name="details">Details</string>
     <string name="cancel">Cancel</string>

@@ -25,9 +25,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_25dp"
-            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             android:fontFamily="@font/poppins_medium"
-            android:text="@{incomingOrder.orderId}"
+            android:text="@{String.format(@string/order_id_place_holder, incomingOrder.orderId)}"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +51,7 @@
             android:id="@+id/view3"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_2dp"
-            android:layout_marginTop="@dimen/dimen_15dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             android:background="@drawable/divider_one"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,10 +59,10 @@
 
         <ImageView
             android:id="@+id/imageView5"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_marginStart="@dimen/dimen_20dp"
-            android:layout_marginTop="@dimen/dimen_15dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view3"
             app:srcCompat="@drawable/up_arrow" />
@@ -83,8 +83,9 @@
 
         <TextView
             android:id="@+id/store_address"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:text="@{incomingOrder.address_1}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -94,8 +95,8 @@
 
         <ImageView
             android:id="@+id/imageView6"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_marginTop="@dimen/dimen_10dp"
             app:layout_constraintStart_toStartOf="@+id/imageView5"
@@ -104,8 +105,9 @@
 
         <TextView
             android:id="@+id/textView12"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:text="@{incomingOrder.landMark1}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -116,10 +118,10 @@
         <!-- Second line -->
         <ImageView
             android:id="@+id/down_arrow"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_marginStart="@dimen/dimen_20dp"
-            android:layout_marginTop="@dimen/dimen_25dp"
+            android:layout_marginTop="@dimen/dimen_15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12"
             app:srcCompat="@drawable/down_arrow" />
@@ -129,7 +131,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_20dp"
-            android:layout_marginEnd="@dimen/dimen_20dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:text="@{incomingOrder.address_2}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -139,8 +141,8 @@
 
         <ImageView
             android:id="@+id/address_line_2"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_marginTop="@dimen/dimen_10dp"
             app:layout_constraintStart_toStartOf="@+id/imageView6"
             app:layout_constraintTop_toBottomOf="@+id/address_2"
@@ -148,18 +150,21 @@
 
         <TextView
             android:id="@+id/store_line_2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:text="@{incomingOrder.landMark2}"
+            app:layout_constraintEnd_toEndOf="@+id/address_2"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/address_2"
             app:layout_constraintTop_toTopOf="@+id/address_line_2"
             hint:text="@string/school_name_two" />
 
         <ImageView
             android:id="@+id/imageView7"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
-            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_15dp"
             app:layout_constraintStart_toStartOf="@+id/imageView5"
             app:layout_constraintTop_toBottomOf="@+id/store_line_2"
             app:srcCompat="@drawable/distance_icon" />
@@ -199,8 +204,8 @@
 
         <ImageView
             android:id="@+id/imageView9"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_marginStart="@dimen/dimen_20dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
             app:layout_constraintStart_toEndOf="@+id/textView14"
@@ -219,8 +224,8 @@
 
         <ImageView
             android:id="@+id/imageView10"
-            android:layout_width="@dimen/dimen_24dp"
-            android:layout_height="@dimen/dimen_24dp"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_marginStart="@dimen/dimen_20dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView9"
             app:layout_constraintStart_toEndOf="@+id/textView15"
@@ -258,8 +263,8 @@
             android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_marginBottom="@dimen/dimen_10dp"
             android:background="@drawable/chip_background_white"
-            android:minHeight="@dimen/dimen_35dp"
-            android:text="@{incomingOrder.taskPrice}"
+            android:minHeight="@dimen/dimen_30dp"
+            android:text="@{String.format(@string/naira_symbol, incomingOrder.taskPrice)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="@+id/view4"
@@ -272,8 +277,8 @@
             android:layout_marginStart="@dimen/dimen_10dp"
             android:background="@drawable/chip_background"
             android:fontFamily="@font/poppins_bold"
-            android:minWidth="@dimen/dimen_75dp"
-            android:minHeight="@dimen/dimen_35dp"
+            android:minWidth="@dimen/dimen_70dp"
+            android:minHeight="@dimen/dimen_30dp"
             android:onClick="@{() -> orderViewModel.acceptOrRejectOrder(true)}"
             android:text="@string/reject"
             android:textAllCaps="false"
@@ -287,13 +292,15 @@
             android:id="@+id/chip_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:background="@drawable/chip_background"
             android:fontFamily="@font/poppins_bold"
-            android:minWidth="@dimen/dimen_75dp"
-            android:minHeight="@dimen/dimen_35dp"
+            android:minWidth="@dimen/dimen_70dp"
+            android:minHeight="@dimen/dimen_30dp"
+            android:visibility="invisible"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/chip_1"
             app:layout_constraintEnd_toStartOf="@+id/chip_3"
             app:layout_constraintStart_toEndOf="@+id/chip_1"
@@ -305,8 +312,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/chip_background"
             android:fontFamily="@font/poppins_bold"
-            android:minWidth="@dimen/dimen_75dp"
-            android:minHeight="@dimen/dimen_35dp"
+            android:minWidth="@dimen/dimen_70dp"
+            android:minHeight="@dimen/dimen_30dp"
             android:onClick="@{() -> orderViewModel.acceptOrRejectOrder(false)}"
             android:text="@string/accept"
             android:textAllCaps="false"
