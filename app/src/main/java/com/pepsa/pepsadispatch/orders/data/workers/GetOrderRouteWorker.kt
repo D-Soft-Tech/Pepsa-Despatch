@@ -21,9 +21,9 @@ import java.util.concurrent.Executors
 class GetOrderRouteWorker(
     context: Context,
     workerParameters: WorkerParameters,
-    private val gson: Gson = Gson(),
-    private val getRouteApi: GetRouteDirectionApi = providesGetRouteDirectionApi(),
 ) : RxWorker(context, workerParameters) {
+    private val gson: Gson = Gson()
+    private val getRouteApi: GetRouteDirectionApi = providesGetRouteDirectionApi()
     override fun createWork(): Single<Result> {
         val inputData = inputData.getString(STRING_GET_ROUTE_ORDER_WORKER_INPUT_DATA_TAG)
         val incomingOrderEntity = gson.fromJson(inputData, OrderEntity::class.java)

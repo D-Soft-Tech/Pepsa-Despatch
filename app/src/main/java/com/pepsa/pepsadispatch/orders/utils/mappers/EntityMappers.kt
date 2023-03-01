@@ -15,6 +15,7 @@ object EntityMappers {
             callBy(
                 parameters.associateWith { parameter ->
                     when (parameter.name) {
+                        OrderDomain::orderId.name -> orderId.toString()
                         OrderDomain::pickUpCoordinate.name -> LatLng(
                             pickUpLatitude,
                             pickUpLongitude,

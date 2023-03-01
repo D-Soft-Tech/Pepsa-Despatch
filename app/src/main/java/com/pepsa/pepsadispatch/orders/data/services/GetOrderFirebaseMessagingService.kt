@@ -9,9 +9,6 @@ import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -28,6 +25,7 @@ import com.pepsa.pepsadispatch.maps.utils.MapUtils
 import com.pepsa.pepsadispatch.mian.presentation.ui.activities.MainAppActivity
 import com.pepsa.pepsadispatch.orders.data.models.OrderEntity
 import com.pepsa.pepsadispatch.orders.data.workers.GetOrderRouteWorker
+import com.pepsa.pepsadispatch.orders.domain.interactors.GetOrderRouteCallBack
 import com.pepsa.pepsadispatch.orders.domain.models.OrderDomain
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INCOMING_ORDER_NOTIFICATION_CHANNEL_ID
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_NOTIFICATION_ID
@@ -39,23 +37,12 @@ import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING
 import com.pepsa.pepsadispatch.orders.utils.mappers.EntityMappers.toDomain
 import timber.log.Timber
 
-class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOwner {
-    private val lifecycleRegistry = LifecycleRegistry(this)
+class GetOrderFirebaseMessagingService :
+    FirebaseMessagingService(),
+    GetOrderRouteCallBack {
     private val gson: Gson = Gson()
     private val workManagerInstance: WorkManager = WorkManager.getInstance(this)
     private val mapsUtils: MapUtils = MapUtils(gson)
-
-    override fun onCreate() {
-        super.onCreate()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    }
-
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     override fun onNewToken(token: String) {
         Timber.d("NEW_TOKEN_TOKEN=====>%s", token)
@@ -68,6 +55,7 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOw
                 gson.fromJson(it, OrderEntity::class.java)
             }
             taskOrder?.let {
+                Timber.d("FORMATED_ORDER====>%s", gson.toJson(it))
                 // Get the route first
                 scheduleWorkToGetOrderRoute(it)
             }
@@ -152,25 +140,44 @@ class GetOrderFirebaseMessagingService : FirebaseMessagingService(), LifecycleOw
         workRequest: WorkRequest,
         inComingOrderEntity: OrderEntity,
     ) {
-        workManagerInstance.getWorkInfoByIdLiveData(workRequest.id)
-            .observe(this) { workInfo ->
-                if (workInfo != null && workInfo.state === WorkInfo.State.SUCCEEDED) {
-                    val outputData = workInfo.outputData
-                    val response =
-                        outputData.getString(STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG)
-                    response?.let {
-                        if (it.isNotEmpty()) {
-                            val mapData = gson.fromJson(it, MapData::class.java)
-                            val distance =
-                                mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.first
-                            val duration =
-                                mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.second
-                            val orderEntity = inComingOrderEntity.toDomain(distance, duration)
-                            createNotification(orderEntity)
-                            startRinging()
-                        }
-                    }
+        while (workManagerInstance.getWorkInfoById(workRequest.id)
+                .get().state != WorkInfo.State.CANCELLED || workManagerInstance.getWorkInfoById(
+                workRequest.id,
+            ).get().state != WorkInfo.State.FAILED
+        ) {
+            if (workManagerInstance.getWorkInfoById(workRequest.id)
+                    .get().state == WorkInfo.State.SUCCEEDED
+            ) {
+                this.onGetRouteSuccess(
+                    workManagerInstance.getWorkInfoById(workRequest.id).get(),
+                    inComingOrderEntity,
+                )
+                break
+            }
+        }
+    }
+
+    override fun onGetRouteSuccess(workInfo: WorkInfo?, orderEntity: OrderEntity) {
+        if (workInfo != null && workInfo.state === WorkInfo.State.SUCCEEDED) {
+            val outputData = workInfo.outputData
+            val response =
+                outputData.getString(STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG)
+            response?.let {
+                if (it.isNotEmpty()) {
+                    val mapData = gson.fromJson(it, MapData::class.java)
+                    val distance =
+                        mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.first
+                    val duration =
+                        mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.second
+                    val orderDomain = orderEntity.toDomain(distance, duration)
+                    createNotification(orderDomain)
+                    startRinging()
                 }
             }
+        }
+    }
+
+    override fun onGetRouteError(errorMessage: String) {
+        Timber.d(errorMessage)
     }
 }
