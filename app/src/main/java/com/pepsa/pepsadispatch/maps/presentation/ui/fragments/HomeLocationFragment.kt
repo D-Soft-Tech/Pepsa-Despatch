@@ -24,7 +24,9 @@ import com.pepsa.pepsadispatch.maps.domain.UiComponentUtils
 import com.pepsa.pepsadispatch.maps.domain.usecases.MapsUseCase
 import com.pepsa.pepsadispatch.maps.utils.MapsConstants
 import com.pepsa.pepsadispatch.maps.utils.MapsMenuProvider
+import com.pepsa.pepsadispatch.orders.presentation.ui.dialogs.IncomingOrderDialog
 import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_DIALOG
 import com.pepsa.pepsadispatch.shared.utils.BitmapGeneratorUtils.bitmapFromVector
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -41,6 +43,9 @@ class HomeLocationFragment :
     private lateinit var mapsUseCase: MapsUseCase
     private lateinit var menuProvider: MapsMenuProvider
     private val orderViewModel: OrdersViewModel by activityViewModels()
+
+    @Inject
+    lateinit var orderDialog: IncomingOrderDialog
 
     @Inject
     lateinit var gson: Gson
@@ -135,6 +140,11 @@ class HomeLocationFragment :
                 viewLifecycleOwner,
                 Lifecycle.State.RESUMED,
             )
+        }
+        orderViewModel.incomingOrder.observe(viewLifecycleOwner) {
+            it?.let {
+                orderDialog.show(childFragmentManager, TAG_INCOMING_ORDER_DIALOG)
+            }
         }
     }
 

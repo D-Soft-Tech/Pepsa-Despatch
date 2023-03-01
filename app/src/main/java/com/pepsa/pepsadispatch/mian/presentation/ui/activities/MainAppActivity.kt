@@ -75,7 +75,6 @@ class MainAppActivity : AppCompatActivity() {
         }
         getFirebaseDeviceToken(firebaseInstance) {
             Timber.d("INCOMING_TOKEN====>%s", it)
-            // cgxpvGMKQYy_MQY4T0JvIk:APA91bGzY161XxySQiG7Oa7DBNn77s_INMjjOXeWwkkIGSHR7s_z9EVsJubl86Xdoij-XjOjFZiGhLxqAzJ6vZ70Crkgyfh8UdMBxtEEDv9rmNCky5DHlAVQ32vIW2JXLR2jS7mHkPc8
         }
     }
 
@@ -83,7 +82,17 @@ class MainAppActivity : AppCompatActivity() {
         super.onResume()
         bottomNavBar.menu.getItem(2).isChecked = true
         listenForIntentOfIncomingOrder()
-//        navigateWithoutAction(R.id.homeLocationFragment)
+        if (!(
+                intent != null && intent.action == STRING_INCOMING_ORDER_INTENT_ACTION &&
+                    !(
+                        intent.getStringExtra(
+                            TAG_INCOMING_ORDER_RECEIVED,
+                        ).isNullOrEmpty()
+                        )
+                )
+        ) {
+            navigateWithoutAction(R.id.homeLocationFragment)
+        }
     }
 
     private fun getFirebaseDeviceToken(

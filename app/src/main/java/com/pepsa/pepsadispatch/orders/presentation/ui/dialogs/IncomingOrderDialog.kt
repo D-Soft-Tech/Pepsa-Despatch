@@ -10,8 +10,11 @@ import androidx.fragment.app.activityViewModels
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.TaskDialogLayoutBinding
 import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class IncomingOrderDialog : DialogFragment() {
+@Singleton
+class IncomingOrderDialog @Inject constructor() : DialogFragment() {
     private lateinit var binding: TaskDialogLayoutBinding
     private val ordersViewModel by activityViewModels<OrdersViewModel>()
 
