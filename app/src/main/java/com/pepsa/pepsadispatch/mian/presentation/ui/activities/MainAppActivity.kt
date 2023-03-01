@@ -38,7 +38,6 @@ class MainAppActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         firebaseInstance = FirebaseMessaging.getInstance()
-        listenForIntentOfIncomingOrder()
         changeStatusBarColor(R.color.primaryColor)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_app)
         bottomNavBar = binding.bottomNavBar
@@ -83,7 +82,8 @@ class MainAppActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bottomNavBar.menu.getItem(2).isChecked = true
-        navigateWithoutAction(R.id.homeLocationFragment)
+        listenForIntentOfIncomingOrder()
+//        navigateWithoutAction(R.id.homeLocationFragment)
     }
 
     private fun getFirebaseDeviceToken(

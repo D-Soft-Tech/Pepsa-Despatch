@@ -66,7 +66,7 @@ class GetOrderFirebaseMessagingService :
         val incomingOrderIntent = Intent(this, MainAppActivity::class.java)
         incomingOrderIntent.apply {
             action = STRING_INCOMING_ORDER_INTENT_ACTION
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(TAG_INCOMING_ORDER_RECEIVED, gson.toJson(incomingOrder))
         }
         val pendingIntent = PendingIntent.getActivity(
@@ -87,7 +87,6 @@ class GetOrderFirebaseMessagingService :
                 .setSmallIcon(R.drawable.png_pepsa_dispatch_logo)
                 .setAutoCancel(true)
                 .setSound(defaultRingtone)
-                .setContentIntent(pendingIntent)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -101,6 +100,8 @@ class GetOrderFirebaseMessagingService :
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(INT_INCOMING_NOTIFICATION_ID, notificationBuilder.build())
+
+        startActivity(incomingOrderIntent)
     }
 
     private fun startRinging() {
@@ -108,7 +109,7 @@ class GetOrderFirebaseMessagingService :
             val ringTone = MediaPlayer.create(applicationContext, R.raw.ring_tone_one)
             ringTone?.apply {
                 isLooping = true
-                startRinging()
+                start()
             }
         } catch (e: Exception) {
             Timber.d("RING_TONE_ERROR===>%s", e.localizedMessage)
