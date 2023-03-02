@@ -18,6 +18,7 @@ import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
 import com.pepsa.pepsadispatch.shared.utils.AppUtils.changeStatusBarColor
+import com.pepsa.pepsadispatch.shared.utils.AppUtils.copyToClipboard
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -73,6 +74,7 @@ class MainAppActivity : AppCompatActivity() {
         }
         getFirebaseDeviceToken(firebaseInstance) {
             Timber.d("INCOMING_TOKEN====>%s", it)
+            copyToClipboard(this, getString(R.string.label_device_token), it)
         }
     }
 
