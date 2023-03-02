@@ -2,6 +2,9 @@ package com.pepsa.pepsadispatch.shared.utils
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.view.Window
@@ -70,4 +73,11 @@ object AppUtils {
             setContentView(R.layout.loader_layout)
             setCancelable(false)
         }
+
+    fun copyToClipboard(context: Context, label: String, text: String) {
+        val clipBoard: ClipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(label, text)
+        clipBoard.setPrimaryClip(clip)
+    }
 }

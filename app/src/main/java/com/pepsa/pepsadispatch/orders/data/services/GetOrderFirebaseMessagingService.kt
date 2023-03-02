@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -33,7 +32,6 @@ import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOM
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_LOGGER
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_NEW_TOKEN_LOGGER
-import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_RING_TONE_ERROR_LOGGER
 import com.pepsa.pepsadispatch.orders.utils.mappers.EntityMappers.toDomain
 import com.pepsa.pepsadispatch.shared.utils.broadcastReceivers.IncomingOrderReceiver
 import timber.log.Timber
@@ -98,18 +96,6 @@ class GetOrderFirebaseMessagingService :
         sendBroadcast(explicitIncomingOrderIntent)
     }
 
-    private fun startRinging() {
-        try {
-            val ringTone = MediaPlayer.create(applicationContext, R.raw.ring_tone_one)
-            ringTone?.apply {
-                isLooping = true
-                start()
-            }
-        } catch (e: Exception) {
-            Timber.d("$TAG_RING_TONE_ERROR_LOGGER%s", e.localizedMessage)
-        }
-    }
-
     private fun scheduleJobToUpdateDeviceTokenToServer() {
     }
 
@@ -165,7 +151,6 @@ class GetOrderFirebaseMessagingService :
                         mapsUtils.mapMapDataToArrayListOfLatLng(mapData).second.second
                     val orderDomain = orderEntity.toDomain(distance, duration)
                     createNotification(orderDomain)
-                    startRinging()
                 }
             }
         }

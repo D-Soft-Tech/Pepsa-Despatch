@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.databinding.TaskDialogLayoutBinding
 import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
+import com.pepsa.pepsadispatch.shared.utils.ringer.RingerUtil
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class IncomingOrderDialog @Inject constructor() : DialogFragment() {
+class IncomingOrderDialog @Inject constructor(
+    private val ringerUtil: RingerUtil
+) : DialogFragment() {
     private lateinit var binding: TaskDialogLayoutBinding
     private val ordersViewModel by activityViewModels<OrdersViewModel>()
 
@@ -47,11 +51,20 @@ class IncomingOrderDialog @Inject constructor() : DialogFragment() {
                 incomingOrder.accepted?.let { isOrderAccepted ->
                     if (isOrderAccepted) {
                         dismiss()
+                        ordersViewModel.resetIncomingOrderToNull()
+                        ringerUtil.stopRinging()
                     } else {
                         dismiss()
+                        ordersViewModel.resetIncomingOrderToNull()
+                        ringerUtil.stopRinging()
                     }
                 }
             }
         }
+    }
+
+    override fun show(manager: FragmentManager, tag: String?) {
+        super.show(manager, tag)
+        ringerUtil.startRinging()
     }
 }

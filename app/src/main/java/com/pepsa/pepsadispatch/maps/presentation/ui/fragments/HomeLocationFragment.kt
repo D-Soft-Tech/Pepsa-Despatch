@@ -28,6 +28,7 @@ import com.pepsa.pepsadispatch.orders.presentation.ui.dialogs.IncomingOrderDialo
 import com.pepsa.pepsadispatch.orders.presentation.viewModels.OrdersViewModel
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_DIALOG
 import com.pepsa.pepsadispatch.shared.utils.BitmapGeneratorUtils.bitmapFromVector
+import com.pepsa.pepsadispatch.shared.utils.ringer.RingerUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -47,6 +48,9 @@ class HomeLocationFragment :
     @Inject
     lateinit var gson: Gson
     private lateinit var mMap: GoogleMap
+
+    @Inject
+    lateinit var ringerUtil: RingerUtil
 
     private var destinationLatitude: Double = 28.5151087
     private var destinationLongitude: Double = 77.3932163
@@ -140,7 +144,7 @@ class HomeLocationFragment :
         }
         orderViewModel.incomingOrder.observe(viewLifecycleOwner) {
             it?.let {
-                val orderDialog = IncomingOrderDialog()
+                val orderDialog = IncomingOrderDialog(ringerUtil)
                 orderDialog.show(childFragmentManager, TAG_INCOMING_ORDER_DIALOG)
             }
         }
