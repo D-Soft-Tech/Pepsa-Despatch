@@ -24,11 +24,14 @@ class IncomingOrderDialog @Inject constructor() : DialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.task_dialog_layout, container, false)
+        dialog?.setCancelable(false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.orderViewModel = ordersViewModel
+        binding.executePendingBindings()
         ordersViewModel.incomingOrder.observe(viewLifecycleOwner) {
             it?.let { incomingOrder ->
                 binding.incomingOrder = incomingOrder

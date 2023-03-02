@@ -73,7 +73,7 @@ class GetOrderFirebaseMessagingService :
             this,
             INT_INCOMING_ORDER_PENDING_INTENT_REQUEST_CODE,
             incomingOrderIntent,
-            PendingIntent.FLAG_IMMUTABLE,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT,
         )
         val defaultRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder =
@@ -86,6 +86,7 @@ class GetOrderFirebaseMessagingService :
                 .setContentText(getString(R.string.order_from) + incomingOrder.pickupStore + "\n" + incomingOrder.address_1)
                 .setSmallIcon(R.drawable.png_pepsa_dispatch_logo)
                 .setAutoCancel(true)
+                .setVibrate(longArrayOf(1000, 1000, 1000, 1000))
                 .setSound(defaultRingtone)
 
         val notificationManager =
@@ -117,7 +118,6 @@ class GetOrderFirebaseMessagingService :
     }
 
     private fun scheduleJobToUpdateDeviceTokenToServer() {
-        // https://www.youtube.com/watch?v=5Bo1rOgWS-Y&ab_channel=LevitesWATCHTV
     }
 
     private fun scheduleWorkToGetOrderRoute(incomingOrder: OrderEntity) {

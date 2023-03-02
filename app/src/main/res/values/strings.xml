@@ -52,4 +52,6 @@
     <string name="time_out">Time out! Please try again later</string>
     <string name="failed_tryagain">Failed, please try again</string>
     <string name="loader_image">Loader image</string>
+    <string name="connection_available">Connection available</string>
+    <string name="connection_unavailable">No internet connection</string>
 </resources>

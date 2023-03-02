@@ -36,7 +36,6 @@ class MainAppActivity : AppCompatActivity() {
     private lateinit var firebaseInstance: FirebaseMessaging
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         firebaseInstance = FirebaseMessaging.getInstance()
         changeStatusBarColor(R.color.primaryColor)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_app)
