@@ -2,7 +2,6 @@ package com.pepsa.pepsadispatch.orders.data.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
@@ -22,19 +21,21 @@ import com.google.gson.Gson
 import com.pepsa.pepsadispatch.R
 import com.pepsa.pepsadispatch.maps.domain.models.MapData
 import com.pepsa.pepsadispatch.maps.utils.MapUtils
-import com.pepsa.pepsadispatch.mian.presentation.ui.activities.MainAppActivity
 import com.pepsa.pepsadispatch.orders.data.models.OrderEntity
 import com.pepsa.pepsadispatch.orders.data.workers.GetOrderRouteWorker
 import com.pepsa.pepsadispatch.orders.domain.interactors.GetOrderRouteCallBack
 import com.pepsa.pepsadispatch.orders.domain.models.OrderDomain
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INCOMING_ORDER_NOTIFICATION_CHANNEL_ID
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_NOTIFICATION_ID
-import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.INT_INCOMING_ORDER_PENDING_INTENT_REQUEST_CODE
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_INPUT_DATA_TAG
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_GET_ROUTE_ORDER_WORKER_OUTPUT_DATA_TAG
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.STRING_INCOMING_ORDER_INTENT_ACTION
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_LOGGER
 import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_INCOMING_ORDER_RECEIVED
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_NEW_TOKEN_LOGGER
+import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants.TAG_RING_TONE_ERROR_LOGGER
 import com.pepsa.pepsadispatch.orders.utils.mappers.EntityMappers.toDomain
+import com.pepsa.pepsadispatch.shared.utils.broadcastReceivers.IncomingOrderReceiver
 import timber.log.Timber
 
 class GetOrderFirebaseMessagingService :
@@ -45,7 +46,7 @@ class GetOrderFirebaseMessagingService :
     private val mapsUtils: MapUtils = MapUtils(gson)
 
     override fun onNewToken(token: String) {
-        Timber.d("NEW_TOKEN_TOKEN=====>%s", token)
+        Timber.d("$TAG_NEW_TOKEN_LOGGER%s", token)
     }
 
     override fun onMessageReceived(deliveryOrder: RemoteMessage) {
@@ -55,7 +56,7 @@ class GetOrderFirebaseMessagingService :
                 gson.fromJson(it, OrderEntity::class.java)
             }
             taskOrder?.let {
-                Timber.d("FORMATED_ORDER====>%s", gson.toJson(it))
+                Timber.d("$TAG_INCOMING_ORDER_LOGGER%s", gson.toJson(it))
                 // Get the route first
                 scheduleWorkToGetOrderRoute(it)
             }
@@ -63,18 +64,11 @@ class GetOrderFirebaseMessagingService :
     }
 
     private fun createNotification(incomingOrder: OrderDomain) {
-        val incomingOrderIntent = Intent(this, MainAppActivity::class.java)
-        incomingOrderIntent.apply {
+        val explicitIncomingOrderIntent = Intent(this, IncomingOrderReceiver::class.java).apply {
             action = STRING_INCOMING_ORDER_INTENT_ACTION
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(TAG_INCOMING_ORDER_RECEIVED, gson.toJson(incomingOrder))
         }
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            INT_INCOMING_ORDER_PENDING_INTENT_REQUEST_CODE,
-            incomingOrderIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT,
-        )
+
         val defaultRingtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder =
             NotificationCompat.Builder(this, INCOMING_ORDER_NOTIFICATION_CHANNEL_ID)
@@ -101,8 +95,7 @@ class GetOrderFirebaseMessagingService :
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(INT_INCOMING_NOTIFICATION_ID, notificationBuilder.build())
-
-        startActivity(incomingOrderIntent)
+        sendBroadcast(explicitIncomingOrderIntent)
     }
 
     private fun startRinging() {
@@ -113,7 +106,7 @@ class GetOrderFirebaseMessagingService :
                 start()
             }
         } catch (e: Exception) {
-            Timber.d("RING_TONE_ERROR===>%s", e.localizedMessage)
+            Timber.d("$TAG_RING_TONE_ERROR_LOGGER%s", e.localizedMessage)
         }
     }
 

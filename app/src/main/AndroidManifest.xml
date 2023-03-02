@@ -59,6 +59,8 @@
                 android:value="" />
         </activity>
 
+        <receiver android:name=".shared.utils.broadcastReceivers.IncomingOrderReceiver" />
+
         <service
             android:name=".orders.data.services.GetOrderFirebaseMessagingService"
             android:exported="false"
