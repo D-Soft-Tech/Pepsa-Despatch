@@ -45,9 +45,6 @@ class HomeLocationFragment :
     private val orderViewModel: OrdersViewModel by activityViewModels()
 
     @Inject
-    lateinit var orderDialog: IncomingOrderDialog
-
-    @Inject
     lateinit var gson: Gson
     private lateinit var mMap: GoogleMap
 
@@ -143,6 +140,7 @@ class HomeLocationFragment :
         }
         orderViewModel.incomingOrder.observe(viewLifecycleOwner) {
             it?.let {
+                val orderDialog = IncomingOrderDialog()
                 orderDialog.show(childFragmentManager, TAG_INCOMING_ORDER_DIALOG)
             }
         }
