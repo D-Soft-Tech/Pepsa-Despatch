@@ -7,9 +7,7 @@ import com.pepsa.pepsadispatch.orders.utils.DeliveryOrdersConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class RingerUtil @Inject constructor(@ApplicationContext context: Context) {
     private val ringTone: MediaPlayer? = try {
         MediaPlayer.create(context, R.raw.ring_tone_one)?.apply {
